@@ -1,0 +1,151 @@
+/* สไตล์พื้นฐานสำหรับทั้งหมด */
+body {
+    font-family: 'Prompt', sans-serif; /* ใช้ฟอนต์ 'Prompt' สำหรับข้อความทั้งหมด */
+    margin: 0; /* ลบระยะขอบภายนอกของ body */
+    padding: 0; /* ลบระยะห่างภายในของ body */
+    box-sizing: border-box; /* รวม padding และ border ในขนาดของกล่อง */
+}
+
+.container {
+    width: 80%; /* ตั้งค่าความกว้างของคอนเทนเนอร์ */
+    margin: 0 auto; /* จัดกึ่งกลางคอนเทนเนอร์ */
+    padding: 20px; /* เพิ่มการเว้นระยะภายใน */
+}
+
+/* ส่วนหัว */
+.header {
+    text-align: center; /* จัดกึ่งกลางข้อความในส่วนหัว */
+    margin-bottom: 20px; /* เพิ่มระยะห่างที่ด้านล่าง */
+}
+
+.header h1 {
+    margin: 0; /* ลบระยะขอบภายนอกของ h1 */
+}
+
+/* ฟอร์ม */
+form {
+    display: flex; /* ใช้ flexbox เพื่อจัดการรูปแบบของฟอร์ม */
+    flex-direction: column; /* จัดเรียงฟอร์มเป็นแนวตั้ง */
+}
+
+.color-controls {
+    margin-bottom: 20px; /* เพิ่มระยะห่างที่ด้านล่าง */
+}
+
+.color-controls label {
+    margin-right: 10px; /* เพิ่มระยะห่างทางด้านขวาของป้ายกำกับ */
+}
+
+/* คอนเทนเนอร์บทเรียน */
+.lesson-container {
+    border: 1px solid #ddd; /* เพิ่มกรอบเส้นขอบรอบคอนเทนเนอร์ */
+    padding: 20px; /* เพิ่มการเว้นระยะภายใน */
+    border-radius: 8px; /* มุมกรอบมีความโค้งมน */
+}
+
+/* ฟิลด์ชื่อบทเรียน */
+.lesson-name-container {
+    margin-bottom: 20px; /* เพิ่มระยะห่างที่ด้านล่าง */
+}
+
+.lesson-name-container input[type="text"] {
+    width: 100%; /* ตั้งค่าความกว้างของฟิลด์ข้อความ */
+    padding: 10px; /* เพิ่มการเว้นระยะภายใน */
+    border: 1px solid #ddd; /* เพิ่มเส้นขอบรอบฟิลด์ข้อความ */
+    border-radius: 4px; /* มุมของฟิลด์ข้อความมีความโค้งมน */
+}
+
+.lesson-name-container input[type="color"] {
+    margin-left: 10px; /* เพิ่มระยะห่างทางด้านซ้ายของปุ่มสี */
+}
+
+/* Section ของบทเรียน */
+.content-section {
+    border: 1px solid #ddd; /* เพิ่มกรอบเส้นขอบรอบ section */
+    padding: 10px; /* เพิ่มการเว้นระยะภายใน */
+    margin-bottom: 10px; /* เพิ่มระยะห่างที่ด้านล่างของแต่ละ section */
+    border-radius: 8px; /* มุมของ section มีความโค้งมน */
+}
+
+.section-header {
+    display: flex; /* ใช้ flexbox เพื่อจัดการรูปแบบของ header ของ section */
+    justify-content: space-between; /* กระจายช่องว่างระหว่างหัวข้อและปุ่มลบ */
+    align-items: center; /* จัดแนวปุ่มลบและหัวข้อให้ตรงกัน */
+    margin-bottom: 10px; /* เพิ่มระยะห่างที่ด้านล่าง */
+}
+
+.section-title {
+    font-weight: bold; /* ใช้ตัวหนาสำหรับหัวข้อของ section */
+}
+
+.delete-button {
+    background-color: #e74c3c; /* ตั้งค่าสีพื้นหลังของปุ่มลบ */
+    color: #fff; /* ตั้งค่าสีข้อความของปุ่มลบ */
+    border: none; /* ไม่มีเส้นขอบสำหรับปุ่มลบ */
+    padding: 5px 10px; /* เพิ่มการเว้นระยะภายใน */
+    border-radius: 4px; /* มุมของปุ่มลบมีความโค้งมน */
+    cursor: pointer; /* เปลี่ยนเคอร์เซอร์เป็นรูปมือเมื่อชี้ไปที่ปุ่มลบ */
+}
+
+.delete-button:hover {
+    background-color: #c0392b; /* เปลี่ยนสีพื้นหลังเมื่อชี้ไปที่ปุ่มลบ */
+}
+
+/* ปุ่มและฟิลด์การเพิ่ม Section */
+.add-section-btn,
+.save-btn {
+    background-color: #3498db; /* ตั้งค่าสีพื้นหลังของปุ่มเพิ่ม section และปุ่มบันทึก */
+    color: #fff; /* ตั้งค่าสีข้อความของปุ่ม */
+    border: none; /* ไม่มีเส้นขอบสำหรับปุ่ม */
+    padding: 10px 20px; /* เพิ่มการเว้นระยะภายใน */
+    border-radius: 4px; /* มุมของปุ่มมีความโค้งมน */
+    cursor: pointer; /* เปลี่ยนเคอร์เซอร์เป็นรูปมือเมื่อชี้ไปที่ปุ่ม */
+    font-size: 16px; /* ตั้งขนาดฟอนต์ของปุ่ม */
+    margin-top: 10px; /* เพิ่มระยะห่างที่ด้านบนของปุ่ม */
+}
+
+.add-section-btn:hover,
+.save-btn:hover {
+    background-color: #2980b9; /* เปลี่ยนสีพื้นหลังเมื่อชี้ไปที่ปุ่ม */
+}
+
+/* คอนเทนต์ของ Section */
+.section-content {
+    margin-top: 10px; /* เพิ่มระยะห่างที่ด้านบน */
+}
+/* คอนเทนเนอร์สำหรับตัวอย่าง */
+.preview {
+    text-align: center; /* จัดตำแหน่งคอนเทนต์ภายในคอนเทนเนอร์ให้อยู่ตรงกลาง */
+    margin-top: 10px; /* เพิ่มระยะห่างที่ด้านบนของคอนเทนเนอร์ตัวอย่าง */
+    overflow: hidden; /* ซ่อนเนื้อหาที่เกินขนาดของคอนเทนเนอร์ */
+}
+
+/* รูปภาพในตัวอย่าง */
+.preview img {
+    max-width: 50%; /* จำกัดความกว้างของภาพไม่ให้เกินขนาดของคอนเทนเนอร์ */
+    height: auto; /* ตั้งค่าความสูงของภาพให้เป็นอัตโนมัติ */
+    display: inline-block; /* ใช้ inline-block เพื่อให้สามารถจัดตำแหน่งกลางได้ */
+    margin: 10px auto 0; /* เพิ่มระยะห่างที่ด้านบนและตั้งค่าอัตโนมัติสำหรับระยะห่างซ้ายและขวา */
+}
+
+/* วิดีโอในตัวอย่าง */
+.preview video {
+    max-width: 50%; /* จำกัดความกว้างของวิดีโอไม่ให้เกินขนาดของคอนเทนเนอร์ */
+    height: auto; /* ตั้งค่าความสูงของวิดีโอให้เป็นอัตโนมัติ */
+    display: inline-block; /* ใช้ inline-block เพื่อให้สามารถจัดตำแหน่งกลางได้ */
+    margin: 10px auto 0; /* เพิ่มระยะห่างที่ด้านบนและตั้งค่าอัตโนมัติสำหรับระยะห่างซ้ายและขวา */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%; /* ตั้งค่าความกว้างของคอนเทนเนอร์ให้เต็มที่ในหน้าจอขนาดเล็ก */
+    }
+
+    .header h1 {
+        font-size: 24px; /* ตั้งขนาดฟอนต์ของ h1 สำหรับหน้าจอขนาดเล็ก */
+    }
+}
+
+
+
