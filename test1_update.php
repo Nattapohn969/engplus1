@@ -31,6 +31,6 @@ $stmt->close();
 $conn->close();
 
 // ส่งผู้ใช้ไปยังหน้าอื่นหลังจากอัปเดตเสร็จ
-header("Location: manage_lessons.php");
+header("Location: lessons_manage.php");
 exit;
 ?>

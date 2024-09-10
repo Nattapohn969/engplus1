@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.ckeditor.com/ckeditor5/ckeditor.js"></script>
-    <link href="css/styles.css" rel="stylesheet" />
+    <link href="css/styles1.css" rel="stylesheet" />
     <title>Add Lesson</title>
     <style>
         .preview {

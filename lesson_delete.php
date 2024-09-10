@@ -89,7 +89,7 @@ if (isset($_GET['lessonID'])) {
         $conn->commit();
         
         // Redirect to the previous page
-        header("Location: manage_lessons.php"); // Change 'previous_page.php' to the actual page you want to redirect to
+        header("Location: lessons_manage.php"); // Change 'previous_page.php' to the actual page you want to redirect to
         exit();
     } catch (Exception $e) {
         // Rollback transaction if an error occurs

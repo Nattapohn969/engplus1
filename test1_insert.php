@@ -42,6 +42,6 @@ if ($stmt = $conn->prepare($sql)) {
 
 $conn->close();
 
-header("Location: manage_lessons.php");
+header("Location: lessons_manage.php");
 exit();
 ?>

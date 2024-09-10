@@ -105,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $conn->commit();
 
         // Redirect to add_test1.php with lessonID and lessonName
-        header("Location: add_test1.php?lessonID=$lessonID&lessonName=" . urlencode($lessonName));
+        header("Location: test1_add.php?lessonID=$lessonID&lessonName=" . urlencode($lessonName));
         exit();
     } catch (Exception $e) {
         // Rollback transaction if an error occurs

@@ -146,7 +146,7 @@
         </div>
 
         <!-- ฟอร์มสำหรับแก้ไขคำถาม -->
-        <form action="update_test1.php" method="post" enctype="multipart/form-data">
+        <form action="test1_update.php" method="post" enctype="multipart/form-data">
             <input type="hidden" name="lessonID" value="<?php echo $lessonID; ?>">
             <div id="questions-container">
                 <?php

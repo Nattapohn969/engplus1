@@ -42,7 +42,7 @@ $conn->close();
                     <td>
                         <a href="lesson.php?lessonID=<?php echo ($lesson['lessonID']); ?>">lesson</a>
                         <a href="test1_display.php?lessonID=<?php echo ($lesson['lessonID']); ?>">test</a> |
-                        <a href="edit_lesson.php?lessonID=<?php echo ($lesson['lessonID']); ?>">Edit lesson</a>
+                        <a href="lesson_edit.php?lessonID=<?php echo ($lesson['lessonID']); ?>">Edit lesson</a>
                         <a
                             href="test1_edit.php?lessonID=<?php echo ($lesson['lessonID']); ?>&lessonName=<?php echo urlencode($lesson['lessonName']); ?>">Edit
                             test</a>
