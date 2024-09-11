@@ -1,0 +1,14 @@
+.preview-container {
+  width: 100%;
+  max-height: 500px; /* ความสูงสูงสุดของกล่อง */
+  border: 1px solid #ddd;
+  overflow: auto; /* เลื่อนดูได้เมื่อต้องการ */
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: #fff; /* สีพื้นหลัง */
+}
+
+#templatePreview {
+  width: 100%;
+  height: auto; /* ทำให้เนื้อหาภายในกล่องไม่เกินขอบเขต */
+}

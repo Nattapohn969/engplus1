@@ -1,0 +1,138 @@
+/* Base styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Fixed menu */
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.menu a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+.menu a:hover {
+    text-decoration: underline;
+}
+
+.menu-spacer {
+    height: 50px; /* Adjust this height to match the height of the fixed menu */
+}
+
+/* Content alignment */
+#templateContainer {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+}
+
+#templateDropdown {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 20px;
+}
+
+#templateDetails {
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    margin-top: 20px;
+    width: 100%;
+}
+
+#previewBtn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 200px;
+    align-self: center;
+}
+
+#previewBtn:hover {
+    background-color: #0056b3;
+}
+
+/* Fullscreen mode */
+.fullscreen {
+    position: fixed;
+    top: 50px; /* Adjust for the fixed menu */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    padding: 40px;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.fullscreen #templateDetails {
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Alert box styling */
+.alert {
+    font-size: 1.25rem;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    #templateDropdown {
+        max-width: 100%;
+    }
+
+    .container {
+        padding: 10px;
+    }
+
+    #templateContainer {
+        padding: 15px;
+    }
+
+    #templateDetails {
+        padding: 5px;
+    }
+
+    #previewBtn {
+        padding: 8px 16px;
+    }
+}

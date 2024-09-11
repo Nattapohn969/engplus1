@@ -1,0 +1,392 @@
+*{
+    font-family: "Prompt", sans-serif;
+}
+
+.navbar{
+    padding: 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.innavbar{
+    font-size: 18px;
+    padding: 2px;
+    display: flex;
+    justify-content: space-between;
+}
+.innavbar a{
+    text-decoration: none;
+}
+.createacc{
+    color: #fff;
+    padding: 6px;
+    border: solid #00AC82;
+    border-radius: 10px;
+    background-color: #00AC82;
+
+}
+.blacktext{
+    color: #000;
+}
+
+.intro-dev{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 55px;
+}
+
+.para-dev{
+    background-color: #E0D8E8;
+    display: grid;
+    grid-template-rows: 0.5fr 0.5fr 0.8fr;
+}
+
+.para-dev-1{
+    font-size: 50px;
+    text-align: center;
+}
+
+.icon-dev{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #E0D8E8;
+}
+
+.para-dev-2{
+    font-size: 18px;
+    text-align: center;
+}
+
+.space p{
+    color: #E0D8E8;
+
+}
+
+.item{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 12px;
+}
+
+.intro{
+    display: grid;
+    grid-template-rows: 0.5fr 0.8fr;
+    background-color: #FFD3D3;
+
+}
+
+.icon{
+    background-color: #FFD3D3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*เนื้อหาลหักหน้าเว็บ
+
+.para-1{
+    border: solid red;
+
+}
+    */
+    
+
+.para-1 p{
+    font-size: 50px;
+    text-align: center;
+}
+/*.para-3{
+    border: solid red;
+    
+}
+*/
+
+.para-3 p{
+    margin: 0%;
+    text-align: center;
+    font-size: 22px;
+}
+
+.para-3 a{
+    font-size: 18px;
+    display: flex;
+    text-align: center;
+}
+
+.intro-paratic{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 55px;
+}
+
+.icon-paratic{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #CCE1EA;
+}
+
+.text-paratic{
+    background-color: #CCE1EA;
+    display: grid;
+    grid-template-rows: 0.5fr 0.5fr 0.8fr;
+}
+
+.space-paratic{
+    color: #CCE1EA;
+}
+
+.para-paratic-1{
+    font-size: 50px;
+    text-align: center;
+    padding-right: 20px;
+    
+}
+
+.para-paratic-2{
+    font-size: 18px;
+    text-align: center;
+    padding-right: 20px;
+}
+
+
+.intro-sum{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 55px;
+}
+
+.para-sum{
+    background-color: #D9E4E2;
+    display: grid;
+    grid-template-rows: 0.5fr 0.5fr 0.8fr;
+}
+
+.icon-sum{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #D9E4E2;
+}
+
+.para-sum-1{
+    font-size: 50px;
+    text-align: center;
+}
+
+.para-sum-2 p{
+    font-size: 18px;
+    text-align: center;
+}
+
+.space-sum{
+    color: #D9E4E2;
+}
+
+.intro-tranform{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 55px;
+}
+
+.icon-tranform{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #FFD3D3;
+}
+
+.text-tranform{
+    background-color: #FFD3D3;
+    display: grid;
+    grid-template-rows: 0.5fr 0.5fr 0.8fr;
+}
+
+.para-tranform-1{
+    font-size: 50px;
+    text-align: center;
+    padding-right: 20px;
+}
+
+.para-tranform-2{
+    font-size: 18px;
+    text-align: center;
+    padding-right: 20px;
+}
+
+.space-tranform{
+    color: #FFD3D3;
+}
+
+.intro-header{
+    display: grid;
+    grid-template-rows: 0.5fr 4fr;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 55px;
+}
+
+.exmple-1{
+    background-color: #CCE1EA;
+}
+
+.exmple-1 p{
+    font-size: 25px;
+    text-align: center
+}
+.exmple-2{
+    background-color: #CCE1EA;
+    padding-bottom: 20px;
+}
+
+.border{
+    margin-left: 200px;
+    margin-right: 200px;
+    background-color: #fff;
+    box-shadow: 4px 4px 8px rgba(0.2, 0.2, 0.2, 0.2);
+    display: flex;
+    flex-direction: column;
+    border-radius: 2%;
+}
+
+.v-video{
+    padding-top: 50px;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.l-less p{
+    font-size: 20px;
+    padding-left: 70px;
+}
+
+.l-less-1 p{
+    padding-left: 70px;
+
+}
+
+.b-buttom{
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 70px;
+    padding-bottom: 10px;
+}
+
+.b-buttom button{
+    background-color: #5F9565; /* สีพื้นหลัง */
+    border: none; /* ไม่มีขอบ */
+    color: white; /* สีข้อความ */
+    padding: 15px 32px; /* ขนาดและพื้นที่รอบข้อความ */
+    text-align: center; /* การจัดตำแหน่งข้อความ */
+    text-decoration: none; /* ไม่มีการขีดเส้นใต้ */
+    display: inline-block; /* การแสดงผลแบบบรรทัดเดียว */
+    font-size: 16px; /* ขนาดฟอนต์ */
+    margin: 4px 2px; /* ระยะห่างรอบปุ่ม */
+    cursor: pointer; /* แสดงเป็นตัวชี้ */
+    border-radius: 10px; /* มุมโค้งของปุ่ม */
+
+}
+
+.intro-login{
+    display: grid;
+    grid-template-columns: 1fr 0.8fr;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 60px;
+    padding-bottom: 32px;
+}
+
+.login-01{
+    display: grid;
+
+}
+
+.yes-login button{
+    background-color: #00AC82;
+    color: #fff;
+    padding: 15px 32px; 
+    text-align: center; 
+    text-decoration: none;
+    display: inline-block; 
+    font-size: 16px; 
+    margin: 4px 2px; 
+    cursor: pointer; 
+    border-radius: 10px; 
+    border: none;
+     
+}
+
+.form-group-1{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.form-group-2{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.login-logo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-icon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.field-1{
+    background-color: #FFFFEC;
+    height: 40px;
+    border-radius: 8px;
+    border: solid #B9B9B9 2px;
+    
+}
+
+.field-2{
+    background-color: #FBFCD5;
+    height: 40px;
+    border-radius: 8px;
+    border: solid #B9B9B9 2px;
+}
+
+.yes-login{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-forget{
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 40px;
+    padding-bottom: 10px;
+}
+
+.login-forget a{
+    text-decoration: none;
+    color: #000;
+}

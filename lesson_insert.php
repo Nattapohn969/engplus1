@@ -1,47 +1,50 @@
 <?php
-include 'connect.php';
+include 'connect.php'; // เชื่อมต่อฐานข้อมูล
 
-// Check if the form is submitted
+// ตรวจสอบการส่งข้อมูลจากแบบฟอร์ม
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Receive data from the form
-    $lessonName = $_POST['lessonName'] ?? '';
-    $pageColor = $_POST['page_color'] ?? '';
-    $textColor = $_POST['text_color'] ?? '';
-    $containerColor = $_POST['container_color'] ?? '';
-    $userID = 50; // Example userID, adjust as needed
+    // รับข้อมูลจากแบบฟอร์ม
+    $lessonName = $_POST['lessonName'] ?? ''; // ชื่อบทเรียน
+    $pageColor = $_POST['page_color'] ?? ''; // สีพื้นหลังหน้า
+    $textColor = $_POST['text_color'] ?? ''; // สีข้อความ
+    $containerColor = $_POST['container_color'] ?? ''; // สีของกล่องเนื้อหา
+    $testType = $_POST['testType'] ?? ''; // ประเภทของการทดสอบ
+    $userID = 50; // ตัวอย่าง userID (ควรปรับให้เป็น ID ของผู้ใช้จริง)
 
-    // Start transaction
+    // เริ่มต้นการทำธุรกรรม
     $conn->begin_transaction();
 
     try {
-        // Insert lesson information
-        $stmt = $conn->prepare("INSERT INTO lessons (lessonName, page_color, text_color, container_color, user_ID) VALUES (?, ?, ?, ?, ?)");
+        // แทรกข้อมูลบทเรียน
+        $stmt = $conn->prepare("INSERT INTO lessons (lessonName, page_color, text_color, container_color, testType, user_ID) VALUES (?, ?, ?, ?, ?, ?)");
         if (!$stmt) {
             throw new Exception("Prepare statement failed: " . $conn->error);
         }
-        $stmt->bind_param("ssssi", $lessonName, $pageColor, $textColor, $containerColor, $userID);
+        $stmt->bind_param("sssssi", $lessonName, $pageColor, $textColor, $containerColor, $testType, $userID);
         $stmt->execute();
-        $lessonID = $stmt->insert_id;
+        $lessonID = $stmt->insert_id; // รับค่า lessonID ที่ถูกสร้างขึ้นใหม่
 
-        // Insert section information
+        // แทรกข้อมูลหมวดหมู่ (section)
         $sectionNum = 1;
         while (isset($_POST["sectionColor$sectionNum"])) {
-            $sectionColor = $_POST["sectionColor$sectionNum"];
-            $contentType = $_POST["contentType"][$sectionNum] ?? '';
+            $sectionColor = $_POST["sectionColor$sectionNum"]; // สีของหมวดหมู่
+            $contentType = $_POST["contentType"][$sectionNum] ?? ''; // ประเภทเนื้อหา
 
+            // แทรกข้อมูลในตาราง sections
             $stmt = $conn->prepare("INSERT INTO sections (lessonID, section_num, section_color, contentType) VALUES (?, ?, ?, ?)");
             if (!$stmt) {
                 throw new Exception("Prepare statement failed: " . $conn->error);
             }
             $stmt->bind_param("iiss", $lessonID, $sectionNum, $sectionColor, $contentType);
             $stmt->execute();
-            $sectionID = $stmt->insert_id;
+            $sectionID = $stmt->insert_id; // รับค่า sectionID ที่ถูกสร้างขึ้นใหม่
 
-            // Handle different content types
+            // จัดการเนื้อหาตามประเภท
             if ($contentType === "text" && !empty($_POST["contentText$sectionNum"])) {
-                $content = $_POST["contentText$sectionNum"];
-                $textColorContent = $_POST["textColor$sectionNum"] ?? '';
+                $content = $_POST["contentText$sectionNum"]; // เนื้อหาข้อความ
+                $textColorContent = $_POST["textColor$sectionNum"] ?? ''; // สีข้อความ
 
+                // แทรกข้อมูลในตาราง text_content
                 $stmt = $conn->prepare("INSERT INTO text_content (sectionID, content, text_color) VALUES (?, ?, ?)");
                 if (!$stmt) {
                     throw new Exception("Prepare statement failed: " . $conn->error);
@@ -50,16 +53,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $stmt->execute();
 
             } elseif ($contentType === "image" && isset($_FILES["contentImage$sectionNum"])) {
-                // Handle image upload
+                // จัดการการอัปโหลดภาพ
                 $imageFile = $_FILES["contentImage$sectionNum"];
                 if ($imageFile['error'] === UPLOAD_ERR_OK) {
                     $imageFileName = basename($imageFile["name"]);
                     $imageFileTmp = $imageFile["tmp_name"];
                     $imageFilePath = "uploads/" . $imageFileName;
 
-                    // Validate file type
+                    // ตรวจสอบประเภทไฟล์
                     $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
                     if (in_array($imageFile['type'], $allowedTypes) && move_uploaded_file($imageFileTmp, $imageFilePath)) {
+                        // แทรกข้อมูลในตาราง images
                         $stmt = $conn->prepare("INSERT INTO images (sectionID, image_url) VALUES (?, ?)");
                         if (!$stmt) {
                             throw new Exception("Prepare statement failed: " . $conn->error);
@@ -74,16 +78,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }
 
             } elseif ($contentType === "video" && isset($_FILES["contentVideo$sectionNum"])) {
-                // Handle video upload
+                // จัดการการอัปโหลดวิดีโอ
                 $videoFile = $_FILES["contentVideo$sectionNum"];
                 if ($videoFile['error'] === UPLOAD_ERR_OK) {
                     $videoFileName = basename($videoFile["name"]);
                     $videoFileTmp = $videoFile["tmp_name"];
                     $videoFilePath = "uploads/" . $videoFileName;
 
-                    // Validate file type
+                    // ตรวจสอบประเภทไฟล์
                     $allowedTypes = ['video/mp4', 'video/avi', 'video/mkv'];
                     if (in_array($videoFile['type'], $allowedTypes) && move_uploaded_file($videoFileTmp, $videoFilePath)) {
+                        // แทรกข้อมูลในตาราง videos
                         $stmt = $conn->prepare("INSERT INTO videos (sectionID, video_url) VALUES (?, ?)");
                         if (!$stmt) {
                             throw new Exception("Prepare statement failed: " . $conn->error);
@@ -101,19 +106,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $sectionNum++;
         }
 
-        // Commit transaction
+        // ยืนยันการทำธุรกรรม
         $conn->commit();
 
-        // Redirect to add_test1.php with lessonID and lessonName
-        header("Location: test1_add.php?lessonID=$lessonID&lessonName=" . urlencode($lessonName));
+        // เปลี่ยนเส้นทางไปยังหน้า test_choose.php พร้อมส่งค่า lessonID, lessonName และ testType
+        header("Location: test_choose.php?lessonID=$lessonID&lessonName=" . urlencode($lessonName) . "&testType=" . urlencode($testType));
         exit();
     } catch (Exception $e) {
-        // Rollback transaction if an error occurs
+        // ยกเลิกการทำธุรกรรมหากเกิดข้อผิดพลาด
         $conn->rollback();
         echo "Failed to save lesson: " . $e->getMessage();
     }
 
-    // Close connection
+    // ปิดการเชื่อมต่อฐานข้อมูล
     $conn->close();
 }
 ?>

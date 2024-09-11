@@ -37,17 +37,20 @@ $conn->close();
         <tbody>
             <?php while ($lesson = $result->fetch_assoc()): ?>
                 <tr>
-                    <td><?php echo ($lesson['lessonID']); ?></td>
-                    <td><?php echo ($lesson['lessonName']); ?></td>
+                    <td><?php echo htmlspecialchars($lesson['lessonID']); ?></td>
+                    <td><?php echo htmlspecialchars($lesson['lessonName']); ?></td>
                     <td>
-                        <a href="lesson.php?lessonID=<?php echo ($lesson['lessonID']); ?>">lesson</a>
-                        <a href="test1_display.php?lessonID=<?php echo ($lesson['lessonID']); ?>">test</a> |
-                        <a href="lesson_edit.php?lessonID=<?php echo ($lesson['lessonID']); ?>">Edit lesson</a>
-                        <a
-                            href="test1_edit.php?lessonID=<?php echo ($lesson['lessonID']); ?>&lessonName=<?php echo urlencode($lesson['lessonName']); ?>">Edit
-                            test</a>
+                        <a href="lesson.php?lessonID=<?php echo urlencode($lesson['lessonID']); ?>">Lesson</a>
+                        <?php if ($lesson['testType'] == 'test1'): ?>
+                            <a href="test1_display.php?lessonID=<?php echo urlencode($lesson['lessonID']); ?>">Test 1</a>
+                        <?php elseif ($lesson['testType'] == 'test2'): ?>
+                            <a href="test2_display.php?lessonID=<?php echo urlencode($lesson['lessonID']); ?>">Test 2</a>
+                        <?php endif; ?>
                         |
-                        <a href="lesson_delete.php?lessonID=<?php echo ($lesson['lessonID']); ?>"
+                        <a href="lesson_edit.php?lessonID=<?php echo urlencode($lesson['lessonID']); ?>">Edit Lesson</a>
+                        <a href="test1_edit.php?lessonID=<?php echo urlencode($lesson['lessonID']); ?>&lessonName=<?php echo urlencode($lesson['lessonName']); ?>">Edit Test</a>
+                        |
+                        <a href="lesson_delete.php?lessonID=<?php echo urlencode($lesson['lessonID']); ?>"
                             onclick="return confirm('Are you sure you want to delete this lesson?');">Delete</a>
                     </td>
                 </tr>
