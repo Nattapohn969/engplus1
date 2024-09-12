@@ -1,15 +1,20 @@
 <?php
 include 'connect.php';
 
+$sql = "SELECT lessonID, lessonName FROM lessons";
+$result = $conn->query($sql);
+
 // Retrieve lessonID and lessonName from query parameters
 $lessonID = $_GET['lessonID'] ?? '';
 $lessonName = $_GET['lessonName'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/stylead.css" rel="stylesheet">
     <title>Choose Test</title>
     <style>
         body {
@@ -23,6 +28,7 @@ $lessonName = $_GET['lessonName'] ?? '';
             align-items: center;
             height: 100vh;
         }
+
         .container {
             background-color: #fff;
             border-radius: 8px;
@@ -32,20 +38,24 @@ $lessonName = $_GET['lessonName'] ?? '';
             width: 100%;
             text-align: center;
         }
+
         h1 {
             color: #2c3e50;
             margin-bottom: 20px;
             font-size: 24px;
         }
+
         p {
             font-size: 16px;
             margin-bottom: 20px;
         }
+
         form {
             display: flex;
             justify-content: center;
             gap: 10px;
         }
+
         button {
             padding: 12px 24px;
             font-size: 16px;
@@ -55,21 +65,27 @@ $lessonName = $_GET['lessonName'] ?? '';
             transition: background-color 0.3s ease;
             color: #fff;
         }
+
         button[value="test1"] {
             background-color: #3498db;
         }
+
         button[value="test1"]:hover {
             background-color: #2980b9;
         }
+
         button[value="test2"] {
             background-color: #e74c3c;
         }
+
         button[value="test2"]:hover {
             background-color: #c0392b;
         }
     </style>
 </head>
+
 <body>
+    <?php include 'navbar.php'; ?>
     <div class="container">
         <h1>Lesson Created Successfully</h1>
         <p>Lesson Name: <?php echo htmlspecialchars($lessonName); ?></p>
@@ -82,4 +98,5 @@ $lessonName = $_GET['lessonName'] ?? '';
         </form>
     </div>
 </body>
+
 </html>

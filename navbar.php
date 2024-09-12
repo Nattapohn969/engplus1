@@ -23,8 +23,8 @@ $userID = $_SESSION['user_ID'];
         <div class="dropdown">
             <button class="dropbtn">Manage Lesson</button>
             <div class="dropdown-content">
-                <a href="add_lesson.php">Create Lesson</a>
-                <a href="lesson_show.php">Manage Lesson</a>
+                <a href="lesson_add.php">Create Lesson</a>
+                <a href="lessons_manage.php">Manage Lesson</a>
                 <!-- เพิ่มลิงค์เพิ่มเติมตามที่ต้องการ -->
             </div>
         </div>

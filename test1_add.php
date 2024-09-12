@@ -1,3 +1,9 @@
+<?php
+include 'connect.php'; // การเชื่อมต่อฐานข้อมูล
+
+$sql = "SELECT lessonID, lessonName FROM lessons";
+$result = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="css/stylead.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>เพิ่มคำถามในแบบทดสอบ</title>
     <style>
@@ -126,6 +133,7 @@
 </head>
 
 <body>
+    <?php include 'navbar.php'; ?>
     <div class="container">
         <div class="header">
             <h1>เพิ่มคำถามในแบบทดสอบใหม่</h1>
@@ -150,22 +158,22 @@
                     <div class="question-block">
                         <span class="question-number"><?php echo $i; ?></span>. <!-- หมายเลขคำถาม -->
                         <label for="question_<?php echo $i; ?>">คำถาม:</label>
-                        <textarea id="question-editor-<?php echo $i; ?>" name="question[]" ></textarea><br><br>
+                        <textarea id="question-editor-<?php echo $i; ?>" name="question[]"></textarea><br><br>
 
                         <label for="choice_a_<?php echo $i; ?>">ตัวเลือก A:</label>
-                        <textarea id="choice-editor-a-<?php echo $i; ?>" name="choice_a[]" ></textarea><br><br>
+                        <textarea id="choice-editor-a-<?php echo $i; ?>" name="choice_a[]"></textarea><br><br>
 
                         <label for="choice_b_<?php echo $i; ?>">ตัวเลือก B:</label>
-                        <textarea id="choice-editor-b-<?php echo $i; ?>" name="choice_b[]" ></textarea><br><br>
+                        <textarea id="choice-editor-b-<?php echo $i; ?>" name="choice_b[]"></textarea><br><br>
 
                         <label for="choice_c_<?php echo $i; ?>">ตัวเลือก C:</label>
-                        <textarea id="choice-editor-c-<?php echo $i; ?>" name="choice_c[]" ></textarea><br><br>
+                        <textarea id="choice-editor-c-<?php echo $i; ?>" name="choice_c[]"></textarea><br><br>
 
                         <label for="choice_d_<?php echo $i; ?>">ตัวเลือก D:</label>
-                        <textarea id="choice-editor-d-<?php echo $i; ?>" name="choice_d[]" ></textarea><br><br>
+                        <textarea id="choice-editor-d-<?php echo $i; ?>" name="choice_d[]"></textarea><br><br>
 
                         <label for="answer_<?php echo $i; ?>">คำตอบ:</label>
-                        <select name="answer[]" >
+                        <select name="answer[]">
                             <option value="">-- เลือกคำตอบที่ถูกต้อง --</option>
                             <option value="A">ตัวเลือก A</option>
                             <option value="B">ตัวเลือก B</option>
