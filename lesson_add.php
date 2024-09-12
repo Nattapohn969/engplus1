@@ -13,10 +13,12 @@ include 'connect.php';
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.ckeditor.com/ckeditor5/35.0.1/classic/ckeditor.js"></script>
     <link href="css/addlesson.css" rel="stylesheet" />
+    <link href="css/stylead.css" rel="stylesheet" />
     <title>Add Lesson</title>
 </head>
 
 <body>
+    <?php include'navbar.php';?>
 
     <div class="container">
         <div class="header">

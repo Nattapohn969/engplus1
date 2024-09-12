@@ -1,5 +1,13 @@
 <?php
+session_start(); // Start the session
+
 include 'connect.php';
+
+// Ensure user is logged in and user_ID is set
+if (!isset($_SESSION['user_ID'])) {
+    die("User not logged in.");
+}
+$userID = $_SESSION['user_ID'];
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -8,7 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $pageColor = $_POST['page_color'] ?? '';
     $textColor = $_POST['text_color'] ?? '';
     $containerColor = $_POST['container_color'] ?? '';
-    $userID = 50; // Example userID, adjust as needed
 
     // Start transaction
     $conn->begin_transaction();
