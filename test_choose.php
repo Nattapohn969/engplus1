@@ -1,16 +1,16 @@
 <?php
 include 'connect.php';
 
-$sql = "SELECT lessonID, lessonName FROM lessons";
-$result = $conn->query($sql);
+// Retrieve values from the GET parameters
+$lessonID = isset($_GET['lessonID']) ? $_GET['lessonID'] : '';
+$lessonName = isset($_GET['lessonName']) ? $_GET['lessonName'] : '';
 
-// Retrieve lessonID and lessonName from query parameters
-$lessonID = $_GET['lessonID'] ?? '';
-$lessonName = $_GET['lessonName'] ?? '';
+// Ensure that lessonName is sanitized before using it
+$lessonName = htmlspecialchars($lessonName);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,37 +66,35 @@ $lessonName = $_GET['lessonName'] ?? '';
             color: #fff;
         }
 
-        button[value="test1"] {
+        button[value="1"] {
             background-color: #3498db;
         }
 
-        button[value="test1"]:hover {
+        button[value="1"]:hover {
             background-color: #2980b9;
         }
 
-        button[value="test2"] {
+        button[value="2"] {
             background-color: #e74c3c;
         }
 
-        button[value="test2"]:hover {
+        button[value="2"]:hover {
             background-color: #c0392b;
         }
     </style>
 </head>
-
 <body>
     <?php include 'navbar.php'; ?>
     <div class="container">
         <h1>Lesson Created Successfully</h1>
-        <p>Lesson Name: <?php echo htmlspecialchars($lessonName); ?></p>
+        <p>Lesson Name: <?php echo $lessonName; ?></p>
         <p>Select which test to create for this lesson:</p>
         <form action="test_create.php" method="get">
-            <input type="hidden" name="lessonID" value="<?php echo htmlspecialchars($lessonID); ?>">
-            <input type="hidden" name="lessonName" value="<?php echo htmlspecialchars($lessonName); ?>">
-            <button type="submit" name="testType" value="test1">Create Test1</button>
-            <button type="submit" name="testType" value="test2">Create Test2</button>
+            <input type="hidden" name="lessonID" value="<?php echo $lessonID; ?>">
+            <input type="hidden" name="lessonName" value="<?php echo $lessonName; ?>">
+            <button type="submit" name="testType_ID" value="1">Create Test1</button>
+            <button type="submit" name="testType_ID" value="2">Create Test2</button>
         </form>
     </div>
 </body>
-
 </html>

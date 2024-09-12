@@ -2,104 +2,114 @@
 
 include 'connect.php';
 
-// Check if the ID is provided
+// ตรวจสอบว่ามีการระบุ ID หรือไม่
 if (isset($_GET['lessonID'])) {
-    $lessonID = intval($_GET['lessonID']); // Ensure it's an integer
+    $lessonID = intval($_GET['lessonID']); // แปลงให้เป็นตัวเลข integer เพื่อความปลอดภัย
 
-    // Start transaction
+    // เริ่มต้นการทำธุรกรรม
     $conn->begin_transaction();
 
     try {
-        // Delete related images
+        // ลบข้อมูลรูปภาพที่เกี่ยวข้อง
         $stmt = $conn->prepare("
             DELETE FROM images 
             WHERE sectionID IN (SELECT sectionID FROM sections WHERE lessonID = ?)
         ");
         if (!$stmt) {
-            throw new Exception("Prepare statement failed: " . $conn->error);
+            throw new Exception("ไม่สามารถเตรียม statement ได้: " . $conn->error);
         }
         $stmt->bind_param("i", $lessonID);
         if (!$stmt->execute()) {
-            throw new Exception("Execute failed: " . $stmt->error);
+            throw new Exception("การประมวลผล statement ล้มเหลว: " . $stmt->error);
         }
         $stmt->close();
 
-        // Delete related videos
+        // ลบข้อมูลวิดีโอที่เกี่ยวข้อง
         $stmt = $conn->prepare("
             DELETE FROM videos 
             WHERE sectionID IN (SELECT sectionID FROM sections WHERE lessonID = ?)
         ");
         if (!$stmt) {
-            throw new Exception("Prepare statement failed: " . $conn->error);
+            throw new Exception("ไม่สามารถเตรียม statement ได้: " . $conn->error);
         }
         $stmt->bind_param("i", $lessonID);
         if (!$stmt->execute()) {
-            throw new Exception("Execute failed: " . $stmt->error);
+            throw new Exception("การประมวลผล statement ล้มเหลว: " . $stmt->error);
         }
         $stmt->close();
 
-        // Delete related text content
+        // ลบข้อมูลเนื้อหาข้อความที่เกี่ยวข้อง
         $stmt = $conn->prepare("
             DELETE FROM text_content 
             WHERE sectionID IN (SELECT sectionID FROM sections WHERE lessonID = ?)
         ");
         if (!$stmt) {
-            throw new Exception("Prepare statement failed: " . $conn->error);
+            throw new Exception("ไม่สามารถเตรียม statement ได้: " . $conn->error);
         }
         $stmt->bind_param("i", $lessonID);
         if (!$stmt->execute()) {
-            throw new Exception("Execute failed: " . $stmt->error);
+            throw new Exception("การประมวลผล statement ล้มเหลว: " . $stmt->error);
         }
         $stmt->close();
 
-        // Delete related test entries
+        // ลบข้อมูล test1 ที่เกี่ยวข้อง
         $stmt = $conn->prepare("DELETE FROM test1 WHERE lessonID = ?");
         if (!$stmt) {
-            throw new Exception("Prepare statement failed: " . $conn->error);
+            throw new Exception("ไม่สามารถเตรียม statement ได้: " . $conn->error);
         }
         $stmt->bind_param("i", $lessonID);
         if (!$stmt->execute()) {
-            throw new Exception("Execute failed: " . $stmt->error);
+            throw new Exception("การประมวลผล statement ล้มเหลว: " . $stmt->error);
         }
         $stmt->close();
 
-        // Delete sections
+        // ลบข้อมูล test2 ที่เกี่ยวข้อง
+        $stmt = $conn->prepare("DELETE FROM test2 WHERE lessonID = ?");
+        if (!$stmt) {
+            throw new Exception("ไม่สามารถเตรียม statement ได้: " . $conn->error);
+        }
+        $stmt->bind_param("i", $lessonID);
+        if (!$stmt->execute()) {
+            throw new Exception("การประมวลผล statement ล้มเหลว: " . $stmt->error);
+        }
+        $stmt->close();
+
+        // ลบข้อมูล section ที่เกี่ยวข้อง
         $stmt = $conn->prepare("DELETE FROM sections WHERE lessonID = ?");
         if (!$stmt) {
-            throw new Exception("Prepare statement failed: " . $conn->error);
+            throw new Exception("ไม่สามารถเตรียม statement ได้: " . $conn->error);
         }
         $stmt->bind_param("i", $lessonID);
         if (!$stmt->execute()) {
-            throw new Exception("Execute failed: " . $stmt->error);
+            throw new Exception("การประมวลผล statement ล้มเหลว: " . $stmt->error);
         }
         $stmt->close();
 
-        // Delete lesson
+        // ลบข้อมูลบทเรียน
         $stmt = $conn->prepare("DELETE FROM lessons WHERE lessonID = ?");
         if (!$stmt) {
-            throw new Exception("Prepare statement failed: " . $conn->error);
+            throw new Exception("ไม่สามารถเตรียม statement ได้: " . $conn->error);
         }
         $stmt->bind_param("i", $lessonID);
         if (!$stmt->execute()) {
-            throw new Exception("Execute failed: " . $stmt->error);
+            throw new Exception("การประมวลผล statement ล้มเหลว: " . $stmt->error);
         }
         $stmt->close();
 
-        // Commit transaction
+        // ยืนยันการทำธุรกรรม
         $conn->commit();
         
-        // Redirect to the previous page
-        header("Location: lessons_manage.php"); // Change 'previous_page.php' to the actual page you want to redirect to
+        // เปลี่ยนหน้าไปยังหน้าการจัดการบทเรียน
+        header("Location: lessons_manage.php"); 
         exit();
     } catch (Exception $e) {
-        // Rollback transaction if an error occurs
+        // ยกเลิกการทำธุรกรรมหากมีข้อผิดพลาด
         $conn->rollback();
-        echo "Failed to delete lesson: " . $e->getMessage();
+        echo "การลบบทเรียนล้มเหลว: " . $e->getMessage();
     }
 
-    // Close connection
+    // ปิดการเชื่อมต่อ
     $conn->close();
 } else {
-    echo "No lesson ID provided.";
+    echo "เกิดข้อผิดพลาด: ไม่ได้ระบุรหัสบทเรียน (lessonID) กรุณากลับไปและลองใหม่อีกครั้ง.";
 }
-?>
