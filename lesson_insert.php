@@ -17,16 +17,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $textColor = $_POST['text_color'] ?? '';
     $containerColor = $_POST['container_color'] ?? '';
 
+    // Handle cover image upload
+    $coverImage = '';
+    if (isset($_FILES['coverImage']) && $_FILES['coverImage']['error'] === UPLOAD_ERR_OK) {
+        $coverImageFile = $_FILES['coverImage'];
+        $coverImageFileName = basename($coverImageFile["name"]);
+        $coverImageFileTmp = $coverImageFile["tmp_name"];
+        $coverImageFilePath = "uploads/" . $coverImageFileName;
+
+        // Validate file type
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (in_array($coverImageFile['type'], $allowedTypes) && move_uploaded_file($coverImageFileTmp, $coverImageFilePath)) {
+            $coverImage = $coverImageFilePath;
+        } else {
+            echo "Invalid file type or failed to upload cover image.";
+            exit;
+        }
+    }
+
     // Start transaction
     $conn->begin_transaction();
 
     try {
         // Insert lesson information
-        $stmt = $conn->prepare("INSERT INTO lessons (lessonName, page_color, text_color, container_color, user_ID) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO lessons (lessonName, page_color, text_color, container_color, cover_image, user_ID) VALUES (?, ?, ?, ?, ?, ?)");
         if (!$stmt) {
             throw new Exception("Prepare statement failed: " . $conn->error);
         }
-        $stmt->bind_param("ssssi", $lessonName, $pageColor, $textColor, $containerColor, $userID);
+        $stmt->bind_param("sssssi", $lessonName, $pageColor, $textColor, $containerColor, $coverImage, $userID);
         $stmt->execute();
         $lessonID = $stmt->insert_id;
 
@@ -110,7 +128,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Commit transaction
         $conn->commit();
-        echo "Lesson saved successfully!";
+
+        // Redirect to test_choose.php with lessonID and lessonName
+        header("Location: test_choose.php?lessonID=" . urlencode($lessonID) . "&lessonName=" . urlencode($lessonName));
+        exit;
+
     } catch (Exception $e) {
         // Rollback transaction if an error occurs
         $conn->rollback();

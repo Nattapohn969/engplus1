@@ -21,6 +21,9 @@ if (!$lesson) {
     die('Lesson not found');
 }
 
+// Retrieve testType_ID from the lesson data
+$testType_ID = isset($lesson['testType_ID']) ? intval($lesson['testType_ID']) : 1;
+
 // ดึงข้อมูล sections
 $stmt = $conn->prepare("SELECT * FROM sections WHERE lessonID = ? ORDER BY section_num");
 $stmt->bind_param("i", $lessonID);
@@ -42,6 +45,7 @@ $sections = $stmt->get_result();
     <link href="css/style1.css" rel="stylesheet" />
     <title><?php echo htmlspecialchars($lesson['lessonName'], ENT_QUOTES, 'UTF-8'); ?></title>
     <style>
+        /* Base styles for desktop and larger screens */
         body {
             background-color:
                 <?php echo htmlspecialchars($lesson['page_color'], ENT_QUOTES, 'UTF-8'); ?>
@@ -50,10 +54,9 @@ $sections = $stmt->get_result();
             color: #333;
             margin: 0;
             padding: 0;
-        }
-
-        * {
-            font-family: "Prompt", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .container {
@@ -63,7 +66,11 @@ $sections = $stmt->get_result();
             padding: 20px;
             border-radius: 10px;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         h1 {
@@ -72,28 +79,99 @@ $sections = $stmt->get_result();
                 <?php echo htmlspecialchars($lesson['text_color'], ENT_QUOTES, 'UTF-8'); ?>
             ;
             margin: 20px 0;
-            font-size: 2.5em;
+            font-size: 2.5rem;
+            /* Use rem for responsive font size */
+        }
+
+        .cover-image {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .cover-image img {
+            max-width: 70%;
+            height: auto;
+            border-radius: 10px;
+            display: block;
         }
 
         .section {
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 20px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
-        .text-content p {
-            margin: 0;
+        .image-content {
+            width: 100%;
+            display: flex;
+            justify-content: center;
         }
 
         .image-content img {
-            max-width: 100%;
+            max-width: 91%;
             height: auto;
             display: block;
+        }
+
+        .video-content {
+            width: 100%;
+            display: flex;
+            justify-content: center;
         }
 
         .video-content video {
             max-width: 100%;
             height: auto;
+        }
+
+        /* Media queries for smaller screens */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+                /* Adjust font size for tablets */
+            }
+
+            .cover-image img {
+                max-width: 90%;
+                /* Adjust image size for tablets */
+            }
+
+            .container {
+                padding: 10px;
+                margin: 10px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+                /* Adjust font size for mobile devices */
+            }
+
+            .cover-image img {
+                max-width: 100%;
+                /* Adjust image size for mobile devices */
+            }
+
+            .container {
+                padding: 5px;
+                margin: 5px;
+            }
+
+            .section {
+                padding: 10px;
+            }
         }
     </style>
 </head>
@@ -101,6 +179,13 @@ $sections = $stmt->get_result();
 <body>
     <div class="container">
         <h1><?php echo htmlspecialchars($lesson['lessonName'], ENT_QUOTES, 'UTF-8'); ?></h1>
+
+        <!-- Display Cover Image -->
+        <?php if (!empty($lesson['cover_image'])): ?>
+            <div class="cover-image">
+                <img src="<?php echo htmlspecialchars($lesson['cover_image'], ENT_QUOTES, 'UTF-8'); ?>" alt="Cover Image">
+            </div>
+        <?php endif; ?>
 
         <?php if ($sections->num_rows > 0): ?>
             <?php while ($section = $sections->fetch_assoc()): ?>
@@ -121,7 +206,6 @@ $sections = $stmt->get_result();
                             <?php echo htmlspecialchars_decode($text['content']); ?>
                         </div>
                     <?php endwhile; ?>
-
 
                     <?php
                     // ดึงข้อมูลเนื้อหาประเภทภาพ
@@ -149,17 +233,16 @@ $sections = $stmt->get_result();
                         </div>
                     <?php endwhile; ?>
 
-
                 </div>
             <?php endwhile; ?>
         <?php else: ?>
             <p>No sections available for this lesson.</p>
         <?php endif; ?>
+
         <!-- ปุ่มลิงก์ไปยังหน้าแบบทดสอบ -->
         <div class="test-button" style="text-align: center; margin-top: 20px;">
-            <a href="test1.php?lessonID=<?php echo $lessonID; ?>" class="btn-test">ทำแบบทดสอบ</a>
-        </div>
-
+            <a href="testPage.php?lessonID=<?php echo $lessonID; ?>" class="btn-test">ทำแบบทดสอบ</a>
+        </div>s
     </div>
 
     <?php $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล ?>

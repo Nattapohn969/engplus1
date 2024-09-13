@@ -188,3 +188,33 @@ textarea {
         width: calc(100% - 16px);
     }
 }
+
+
+/* addlesson.css */
+
+.cover-image-controls {
+    margin-bottom: 20px;
+}
+
+.cover-image-controls label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.cover-image-controls input[type="file"] {
+    display: block;
+}
+
+.cover-image-preview {
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    text-align: center;
+}
+
+.cover-image-preview img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Add additional CSS rules as needed for other elements */

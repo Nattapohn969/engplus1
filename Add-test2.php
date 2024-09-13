@@ -1,119 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Question</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="css/stylead.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>เพิ่มคำถามในแบบทดสอบ</title>
     <style>
-       form {
-    display: flex;
-    flex-direction: column; /* จัดเรียงในแนวตั้ง */
-    max-width: 600px; /* ขนาดที่เหมาะสมสำหรับฟอร์ม */
-    margin: 20px auto;
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-}
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
 
-.form-group {
-    margin-bottom: 15px;
-}
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 6px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
 
-label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
 
-input[type="text"] {
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-}
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+        }
 
-input[type="submit"] {
-    background-color: #28a745; 
-    color: white; 
-    padding: 10px 20px; 
-    font-size: 16px; 
-    border: none;
-    border-radius: 5px; 
-    cursor: pointer; 
-    transition: background-color 0.3s ease; 
-}
+        .lesson-name-container {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #555;
+        }
 
-input[type="submit"]:hover {
-    background-color: #218838; 
-}
+        .question-block {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f7f7f7;
+            position: relative;
+        }
 
-@media (max-width: 768px) {
-    form {
-        width: 90%; /* ปรับขนาดฟอร์มบนหน้าจอขนาดเล็ก */
-    }
-}
+        .question-number {
+            font-weight: bold;
+            color: #555;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
 
+        .words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .words input {
+            width: calc(10% - 10px);
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #ddd;
+            margin: 20px 0;
+        }
     </style>
 </head>
+
 <body>
-    <form method="POST" action="Add-test2-sql.php">
+    <div class="container">
+        <div class="header">
+            <h1>เพิ่มคำถามในแบบทดสอบใหม่</h1>
+        </div>
+
         <div class="lesson-name-container">
             <?php
-            // รับค่าจาก query string (หรือที่มาจากการเชื่อมต่อฐานข้อมูล)
             $lessonID = isset($_GET['lessonID']) ? htmlspecialchars($_GET['lessonID']) : '';
             $lessonName = isset($_GET['lessonName']) ? htmlspecialchars($_GET['lessonName']) : '';
             ?>
             <input type="hidden" id="lessonID" name="lessonID" value="<?php echo $lessonID; ?>" />
-            <input type="hidden" id="testType_ID" name="testType_ID" value="2" />
-            <!-- กำหนด testType_ID เป็น 2 โดยค่าเริ่มต้น -->
             <p><strong>บทเรียน:</strong> <?php echo $lessonName; ?></p>
         </div>
 
-        <div class="form-group">
-            <label for="w1">Word 1:</label>
-            <input type="text" id="w1" name="w1">
-        </div>
-        <div class="form-group">
-            <label for="w2">Word 2:</label>
-            <input type="text" id="w2" name="w2">
-        </div>
-        <div class="form-group">
-            <label for="w3">Word 3:</label>
-            <input type="text" id="w3" name="w3">
-        </div>
-        <div class="form-group">
-            <label for="w4">Word 4:</label>
-            <input type="text" id="w4" name="w4">
-        </div>
-        <div class="form-group">
-            <label for="w5">Word 5:</label>
-            <input type="text" id="w5" name="w5">
-        </div>
-        <div class="form-group">
-            <label for="w6">Word 6:</label>
-            <input type="text" id="w6" name="w6">
-        </div>
-        <div class="form-group">
-            <label for="w7">Word 7:</label>
-            <input type="text" id="w7" name="w7">
-        </div>
-        <div class="form-group">
-            <label for="w8">Word 8:</label>
-            <input type="text" id="w8" name="w8">
-        </div>
-        <div class="form-group">
-            <label for="w9">Word 9:</label>
-            <input type="text" id="w9" name="w9">
-        </div>
-        <div class="form-group">
-            <label for="w10">Word 10:</label>
-            <input type="text" id="w10" name="w10">
-        </div>
 
-        <input type="hidden" name="score[]" value="1"/>
+        <!-- Start of the form -->
+        <form id="testForm" action='Add-test2-sql.php' method="post" enctype="multipart/form-data">
+            <input type="hidden" name="lessonID" value="<?php echo $lessonID; ?>" />
+            <!-- Create each question block -->
+            <?php for ($i = 1; $i <= 5; $i++): ?>
+                <div class="question-block">
+                    <div class="question-number">Question <?php echo $i; ?></div>
+                    <div class="words">
+                        <?php for ($j = 1; $j <= 10; $j++): ?>
+                            <input type="text" name="word_<?php echo $i; ?>[]" placeholder="Word <?php echo $j; ?>" />
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                <div class="divider"></div>
+            <?php endfor; ?>
 
-        <input type="submit" value="Submit">
-    </form>
+            <!-- Save button -->
+            <div class="btn-container">
+                <button type="submit" class="submit-btn">Save Lesson</button>
+            </div>
+        </form>
+    </div>
 </body>
+
 </html>

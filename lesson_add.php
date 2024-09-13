@@ -1,6 +1,3 @@
-<?php
-include 'connect.php';
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,20 +9,23 @@ include 'connect.php';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.ckeditor.com/ckeditor5/35.0.1/classic/ckeditor.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="css/addlesson.css" rel="stylesheet" />
     <link href="css/stylead.css" rel="stylesheet" />
     <title>Add Lesson</title>
 </head>
 
 <body>
-    <?php include'navbar.php';?>
+    <?php include 'navbar.php'; ?>
 
     <div class="container">
         <div class="header">
             <h1>Add Lesson</h1>
         </div>
 
-        <form action="lesson_insert.php" method="post" enctype="multipart/form-data">
+        <form action='lesson_insert.php' method="post" enctype="multipart/form-data">
+
             <div class="color-controls">
                 <label for="page_color">Page Background Color:</label>
                 <input type="color" id="page_color" name="page_color" onchange="updatePageColor()" />
@@ -43,6 +43,12 @@ include 'connect.php';
 
                     <label for="text_color">Text Color:</label>
                     <input type="color" id="text_color" name="text_color" onchange="changeLessonTextColor()" />
+                </div>
+
+                <div class="cover-image-controls">
+                    <label for="coverImage">Cover Image:</label>
+                    <input type="file" id="coverImage" name="coverImage" accept="image/*" />
+                    <div id="coverImagePreview" class="cover-image-preview"></div> <!-- Preview container -->
                 </div>
 
                 <div id="sections-container">
@@ -133,9 +139,9 @@ include 'connect.php';
 
                 reader.onload = function (e) {
                     if (type === "image") {
-                        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Image Preview">`;
+                        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Image Preview" style="max-width: 100%; height: auto;">`;
                     } else if (type === "video") {
-                        previewDiv.innerHTML = `<video controls src="${e.target.result}"></video>`;
+                        previewDiv.innerHTML = `<video controls src="${e.target.result}" style="max-width: 100%; height: auto;"></video>`;
                     }
                 };
 
@@ -165,8 +171,7 @@ include 'connect.php';
                     <option value="image">Image</option>
                     <option value="video">Video</option>
                 </select>
-                <div id="content${sectionCount}" class="section-content">
-                </div>
+                <div id="content${sectionCount}" class="section-content"></div>
             `;
 
             sectionsContainer.appendChild(newSection);
@@ -199,6 +204,25 @@ include 'connect.php';
             const lessonNameInput = document.getElementById("lessonName");
             lessonNameInput.style.color = textColor;
         }
+
+        function previewCoverImage() {
+            const fileInput = document.getElementById('coverImage');
+            const previewDiv = document.getElementById('coverImagePreview');
+            previewDiv.innerHTML = ""; // Clear previous preview
+
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    previewDiv.innerHTML = `<img src="${e.target.result}" alt="Cover Image Preview" style="max-width: 100%; height: auto;">`;
+                };
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        document.getElementById('coverImage').addEventListener('change', previewCoverImage);
     </script>
 </body>
 
