@@ -139,7 +139,7 @@
 
         </div>
     </div>
-
+<!-- 
     <div class='intro-header'>
         <div class='exmple-1'>
             <strong>
@@ -165,7 +165,7 @@
                     <button type='button' name='myButton'>เข้าสู่บทเรียน</button>
                 </div>
             </div>
-        </div>
+        </div> -->
 
 
         <form action="login.php" method="post">

@@ -10,14 +10,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="css/stylead.css" rel="stylesheet">
     <title>เพิ่มคำถามในแบบทดสอบ</title>
     <style>
         body {
             font-family: 'Prompt', sans-serif;
             background-color: #f9f9f9;
             margin: 0;
-            padding: 20px;
         }
 
         .container {

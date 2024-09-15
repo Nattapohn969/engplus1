@@ -28,13 +28,17 @@ $userID = $_SESSION['user_ID'];
                 <!-- เพิ่มลิงค์เพิ่มเติมตามที่ต้องการ -->
             </div>
         </div>
-        <div id="accountMenu" class="dropdown">
-            <button class="dropbtn" id="accountButton">
-                <?php echo $username; ?>
-            </button>
-            <div id="dropdownContent" class="dropdown-content">
-                <a href="logout.php">Logout</a>
-            </div>
+        <button class="dropbtn" id="accountButton">
+            <?php
+            echo htmlspecialchars($_SESSION['username']);
+            // แสดงบทบาทของผู้ใช้
+            if (isset($_SESSION['role'])) {
+                echo " (" . htmlspecialchars($_SESSION['role']) . ")";
+            }
+            ?>
+        </button>
+        <div id="dropdownContent" class="dropdown-content">
+            <a href="logout.php">Logout</a>
         </div>
     </div>
 </div>

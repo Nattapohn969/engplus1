@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,6 +14,26 @@
     <link href="css/stylead.css" rel="stylesheet" />
     <title>Add Lesson</title>
 </head>
+<style>
+    .lesson-description-container {
+        margin: 20px 0;
+    }
+
+    .lesson-description-container label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .lesson-description-container textarea {
+        width: 100%;
+        height: 200px;
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+</style>
 
 <body>
     <?php include 'navbar.php'; ?>
@@ -50,6 +69,11 @@
                     <input type="file" id="coverImage" name="coverImage" accept="image/*" />
                     <div id="coverImagePreview" class="cover-image-preview"></div> <!-- Preview container -->
                 </div>
+                <div class="lesson-description-container">
+                    <label for="lessonDescription">Lesson Description:</label>
+                    <textarea id="lessonDescription" name="lessonDescription"
+                        placeholder="Enter lesson description here..."></textarea>
+                </div>
 
                 <div id="sections-container">
                     <div class="content-section" id="section1">
@@ -79,6 +103,24 @@
 
     <script>
         let sectionCount = 1;
+        //ck editor ของ รายละเอียดของบทเรียน
+        document.addEventListener("DOMContentLoaded", function () {
+            ClassicEditor
+                .create(document.querySelector('#lessonDescription'), {
+                    toolbar: [
+                        'heading', '|',
+                        'bold', 'italic', 'link', '|',
+                        'fontColor', 'fontBackgroundColor', '|',
+                        'bulletedList', 'numberedList', '|',
+                        'imageUpload', 'blockQuote', 'insertTable', '|',
+                        'undo', 'redo'
+                    ],
+                    language: 'en',
+                })
+                .catch(error => {
+                    console.error('CKEditor initialization error for lesson description:', error);
+                });
+        });
 
         function initializeEditor(sectionNumber) {
             ClassicEditor

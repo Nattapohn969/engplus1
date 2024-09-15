@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $pageColor = $_POST['page_color'] ?? '';
     $textColor = $_POST['text_color'] ?? '';
     $containerColor = $_POST['container_color'] ?? '';
+    $lessonDescription = $_POST['lessonDescription'] ?? '';
 
     // Handle cover image upload
     $coverImage = '';
@@ -40,11 +41,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     try {
         // Insert lesson information
-        $stmt = $conn->prepare("INSERT INTO lessons (lessonName, page_color, text_color, container_color, cover_image, user_ID) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO lessons (lessonName, page_color, text_color, container_color, cover_image, user_ID, lessonDescription) VALUES (?, ?, ?, ?, ?, ?, ?)");
         if (!$stmt) {
             throw new Exception("Prepare statement failed: " . $conn->error);
         }
-        $stmt->bind_param("sssssi", $lessonName, $pageColor, $textColor, $containerColor, $coverImage, $userID);
+        $stmt->bind_param("sssssis", $lessonName, $pageColor, $textColor, $containerColor, $coverImage, $userID, $lessonDescription);
         $stmt->execute();
         $lessonID = $stmt->insert_id;
 
