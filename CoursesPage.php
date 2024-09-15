@@ -23,9 +23,98 @@ $user_ID = $_SESSION['user_ID'];
         rel="stylesheet">
     <link href="CoursesPage.css" rel="stylesheet" />
     <title>ENG PLUS</title>
-    <style>
-     
-    </style>
+    <!-- <style>
+        .course-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 20px;
+        }
+
+        .course-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            width: 80%;
+            height: 200px; /* Set a fixed height to match the design */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-image {
+            width: 200px;
+            height: 150px;
+            background-color: #e0e0e0;
+            background-image: url('path_to_your_placeholder_image'); /* Use a placeholder image */
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+        }
+
+        .course-info {
+            flex-grow: 1;
+            margin-left: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .course-info h4 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .course-info p {
+            margin: 10px 0;
+            font-size: 1rem;
+            color: #777;
+        }
+
+        .heart-icon {
+            font-size: 2rem;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+
+        .heart-icon.saved {
+            color: red;
+        }
+
+        .access-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            align-self: flex-end; /* Align the button to the right */
+        }
+
+        .access-btn:hover {
+            background-color: #45a049;
+        }
+        
+        .heart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .heart-container .heart-icon {
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        .heart-container .heart-icon.saved {
+            color: red;
+        }
+    </style> -->
 </head>
 
 <body>
@@ -39,12 +128,19 @@ $user_ID = $_SESSION['user_ID'];
             <ul><a href='ProfilePage.php' class='blacktext' style="margin-right: 30px">Profile</a></ul>
             <div id="accountMenu" class="dropdown">
                 <button class="dropbtn" id="accountButton">
-                    <?php echo $username; ?>
+                    <?php
+                    echo htmlspecialchars($_SESSION['username']);
+                    // แสดงบทบาทของผู้ใช้
+                    if (isset($_SESSION['role'])) {
+                        echo " (" . htmlspecialchars($_SESSION['role']) . ")";
+                    }
+                    ?>
                 </button>
                 <div id="dropdownContent" class="dropdown-content">
                     <a href="logout.php">Logout</a>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -57,17 +153,20 @@ $user_ID = $_SESSION['user_ID'];
         $sql = "SELECT * FROM lessons";
         $result = mysqli_query($conn, $sql);
         while ($row = mysqli_fetch_array($result)) {
-        ?>
+            ?>
             <div class="course-card">
-                <span class="heart-icon" onclick="toggleSaveLesson(this, <?= $row['lessonID'] ?>)">&#x2661;</span>
-                <img src="<?= htmlspecialchars($row['cover_image']) ?>" alt="Image">
+                <div class="course-image" style="background-image: url('<?= htmlspecialchars($row['cover_image']) ?>');">
+                </div>
                 <div class="course-info">
                     <h4><?= htmlspecialchars($row['lessonName']); ?></h4>
                     <p>รายละเอียด: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                 </div>
-                <a href="lesson.php?lessonID=<?= $row['lessonID'] ?>" class="access-btn">เข้าสู่บทเรียน</a>
+                <div class="heart-container">
+                    <span class="heart-icon" onclick="toggleSaveLesson(this, <?= $row['lessonID'] ?>)">&#x2661;</span>
+                    <a href="lesson.php?lessonID=<?= $row['lessonID'] ?>" class="access-btn">เข้าสู่บทเรียน</a>
+                </div>
             </div>
-        <?php
+            <?php
         }
         mysqli_close($conn);
         ?>
@@ -89,7 +188,7 @@ $user_ID = $_SESSION['user_ID'];
         function toggleSaveLesson(element, lessonID) {
             const card = element.closest('.course-card');
             const lessonName = card.querySelector('h4').textContent;
-            const lessonImage = card.querySelector('img').src;
+            const lessonImage = card.querySelector('.course-image').style.backgroundImage;
 
             let savedCourses = JSON.parse(localStorage.getItem("myCourses")) || [];
             const course = { name: lessonName, image: lessonImage, id: lessonID };

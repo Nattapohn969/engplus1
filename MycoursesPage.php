@@ -1,10 +1,6 @@
 <?php
 session_start();
-
-// Check if the user is logged in and has the Learner role
-if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'Learner') {
-    header('Location: login.php');
-    exit;
+if (isset($_SESSION['username'])) {
 }
 
 // Fetch user information from the session
@@ -41,15 +37,18 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link href="MycoursesPage.css" rel="stylesheet" />
     <title>ENG PLUS</title>
 </head>
+
 <body>
     <div class='navbar'>
         <img src='assets/img/LogoEngPlusNew.png' width='160px' height='auto'>
@@ -61,65 +60,46 @@ $conn->close();
             <ul><a href='ProfilePage.php' class='blacktext' style="margin-right: 30px">Profile</a></ul>
             <div id="accountMenu" class="dropdown">
                 <button class="dropbtn" id="accountButton">
-                    <?php echo $username; ?>
+                    <?php
+                    echo htmlspecialchars($_SESSION['username']);
+                    // แสดงบทบาทของผู้ใช้
+                    if (isset($_SESSION['role'])) {
+                        echo " (" . htmlspecialchars($_SESSION['role']) . ")";
+                    }
+                    ?>
                 </button>
                 <div id="dropdownContent" class="dropdown-content">
                     <a href="logout.php">Logout</a>
                 </div>
             </div>
+
         </div>
     </div>
 
-    <div class="text-h1">
-        <h1>บทเรียนที่ชื่นชอบ</h1>
+    <div class="page-container">
+        <div class="header-section">
+            <h1>บทเรียนที่ชื่นชอบ</h1>
+        </div>
+
+        <div id="course-list" class="course-grid">
+            <?php if (empty($courses)): ?>
+                <p>No favorite courses found.</p>
+            <?php else: ?>
+                <?php foreach ($courses as $course): ?>
+                    <div class="course-card" data-lesson-id="<?php echo $course['lessonID']; ?>">
+                        <img src="<?php echo htmlspecialchars($course['cover_image']); ?>"
+                            alt="<?php echo htmlspecialchars($course['lessonName']); ?> Image" width="200" height="150">
+                        <div class="course-details">
+                            <h4><?php echo htmlspecialchars($course['lessonName']); ?></h4>
+                            <span class="remove-button" onclick="removeCourse(<?php echo $course['lessonID']; ?>)">Remove</span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
     </div>
 
-    <div id="my-courses"></div>
-
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const courses = <?php echo json_encode($courses); ?>;
-            renderMyCourses(courses);
-        });
-
-        function renderMyCourses(courses) {
-            const myCoursesDiv = document.getElementById("my-courses");
-            myCoursesDiv.innerHTML = "";
-
-            courses.forEach((course) => {
-                const card = document.createElement("div");
-                card.className = "course-card";
-                card.setAttribute('data-lesson-id', course.lessonID);
-
-                // Add image to card
-                const image = document.createElement("img");
-                image.src = course.cover_image;
-                image.width = 200;
-                image.height = 150;
-                image.alt = `${course.lessonName} Image`;
-
-                // Add title
-                const title = document.createElement("h4");
-                title.textContent = course.lessonName;
-
-                // Add remove button
-                const removeButton = document.createElement("span");
-                removeButton.textContent = "Remove";
-                removeButton.className = "remove-button";
-                removeButton.onclick = function () {
-                    removeCourse(course.lessonID);
-                };
-
-                // Append everything to the card
-                card.appendChild(image);
-                card.appendChild(title);
-                card.appendChild(removeButton);
-
-                // Append card to my-courses div
-                myCoursesDiv.appendChild(card);
-            });
-        }
-
         function removeCourse(lessonID) {
             fetch('remove_favorite.php', {
                 method: 'POST',
@@ -137,4 +117,5 @@ $conn->close();
         }
     </script>
 </body>
+
 </html>
