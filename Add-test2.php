@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="css/stylead.css" rel="stylesheet">
     <title>เพิ่มคำถามในแบบทดสอบ</title>
     <style>
         body {
@@ -98,6 +99,7 @@
 </head>
 
 <body>
+    <?php include 'navbar.php'; ?>
     <div class="container">
         <div class="header">
             <h1>เพิ่มคำถามในแบบทดสอบใหม่</h1>

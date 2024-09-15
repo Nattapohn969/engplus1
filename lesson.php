@@ -241,8 +241,8 @@ $sections = $stmt->get_result();
 
         <!-- ปุ่มลิงก์ไปยังหน้าแบบทดสอบ -->
         <div class="test-button" style="text-align: center; margin-top: 20px;">
-            <a href="testPage.php?lessonID=<?php echo $lessonID; ?>" class="btn-test">ทำแบบทดสอบ</a>
-        </div>s
+            <a href="testPage.php?lessonID=<?php echo $lessonID; ?>" class="btn-test"><h2>ทำแบบทดสอบ</h2></a>
+        </div>
     </div>
 
     <?php $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล ?>

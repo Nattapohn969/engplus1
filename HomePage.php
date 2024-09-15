@@ -17,9 +17,9 @@
     <div class='navbar'>
         <img src='assets/img/LogoEngPlusNew.png' width='160px' height='auto'></img>
         <div class='innavbar'>
-            <ul><a href='HomePage.html' class='blacktext'>Home</a></ul>
+            <ul><a href='HomePage.php' class='blacktext'>Home</a></ul>
             <ul><a href='CoursesPage.php' class='blacktext'>Courses</a></ul>
-            <ul><a href='MycoursesPage.html' class='blacktext'>My Courses</a></ul>
+            <ul><a href='MycoursesPage.php' class='blacktext'>My Courses</a></ul>
             <ul><a href='#' class='blacktext'>Transform</a></ul>
             <ul><a href='register.php' class='blacktext'>Register</a></ul>
             <ul><a href='login.php' class='createacc'>Login</a></ul>

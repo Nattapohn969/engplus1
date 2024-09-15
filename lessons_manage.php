@@ -1,8 +1,9 @@
 <?php
 include 'connect.php';
-// session_start(); // Ensure session is started
+// Ensure session is started
+// session_start();
 
-// // Assuming $userID is stored in the session
+// Check if user is logged in
 // if (!isset($_SESSION['userID'])) {
 //     header('Location: login.php'); // Redirect to login if not logged in
 //     exit();
@@ -27,9 +28,7 @@ include 'connect.php';
 </head>
 
 <body class="sb-nav-fixed">
-    <?php
-    include 'navbar.php';
-    ?>
+    <?php include 'navbar.php'; ?>
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
@@ -44,6 +43,7 @@ include 'connect.php';
                                 <tr>
                                     <th>รหัสบทเรียน</th>
                                     <th>ชื่อบทเรียน</th>
+                                    <th>รูปปก</th>
                                     <th>รายละเอียด</th>
                                     <th>ลบ</th>
                                 </tr>
@@ -64,19 +64,27 @@ include 'connect.php';
                                         <td><?= htmlspecialchars($row["lessonID"]) ?></td>
                                         <td><?= htmlspecialchars($row["lessonName"]) ?></td>
                                         <td>
+                                            <!-- Display the cover image with proper sizing -->
+                                            <img src="<?= htmlspecialchars($row['cover_image']) ?>" alt="Cover Image"
+                                                style="height: 100px; width: auto;">
+                                        </td>
+
+                                        <td>
                                             <a href="<?= $editPage ?>?lessonID=<?= htmlspecialchars($row["lessonID"]) ?>">
                                                 <img src="assets/img/edit.png"
-                                                    style="height: 30px; width: 30px; margin-right: 10px;"></img>
+                                                    style="height: 30px; width: 30px; margin-right: 10px;" alt="Edit"></img>
                                             </a>
                                             <a
                                                 href="<?= $templatePage ?>?lessonID=<?= htmlspecialchars($row["lessonID"]) ?>">
-                                                <img src="assets/img/search.png" style="height: 30px; width: 30px;"></img>
+                                                <img src="assets/img/search.png" style="height: 30px; width: 30px;"
+                                                    alt="Search"></img>
                                             </a>
                                         </td>
                                         <td>
                                             <a href="lesson_delete.php?lessonID=<?= htmlspecialchars($row["lessonID"]) ?>"
                                                 onclick="return confirmDelete(this.href);">
-                                                <img src="assets/img/delete.png" style="height: 30px; width: 30px;"></img>
+                                                <img src="assets/img/delete.png" style="height: 30px; width: 30px;"
+                                                    alt="Delete"></img>
                                             </a>
                                         </td>
                                     </tr>
@@ -101,16 +109,11 @@ include 'connect.php';
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
         crossorigin="anonymous"></script>
     <script src="js/datatables-simple-demo.js"></script>
+    <script language="JavaScript">
+        function confirmDelete(url) {
+            return confirm('คุณต้องการลบข้อมูลหรือไม่ ?') ? (window.location.href = url, true) : false;
+        }
+    </script>
 </body>
 
 </html>
-
-<script language="JavaScript">
-    function confirmDelete(url) {
-        if (confirm('คุณต้องการลบข้อมูลหรือไม่ ?')) {
-            window.location.href = url;
-            return true;
-        }
-        return false;
-    }
-</script>

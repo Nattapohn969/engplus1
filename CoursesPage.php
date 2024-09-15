@@ -11,7 +11,6 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'Learner') {
 $username = htmlspecialchars($_SESSION['username']);
 $user_ID = $_SESSION['user_ID'];
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,21 +21,22 @@ $user_ID = $_SESSION['user_ID'];
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="css/CoursesPage.css">
+    <link href="CoursesPage.css" rel="stylesheet" />
     <title>ENG PLUS</title>
+    <style>
+     
+    </style>
 </head>
 
 <body>
     <div class='navbar'>
         <img src='assets/img/LogoEngPlusNew.png' width='160px' height='auto'>
         <div class='innavbar'>
-            <ul><a href='HomePage.html' class='blacktext' style="margin-right: 10px">Home</a></ul>
-            <ul><a href='CoursesPage.php' class='blacktext' style="margin-right: 10px">Courses</a></ul>
-            <ul><a href='MycoursesPage.php' class='blacktext' style="margin-right: 10px">My Courses</a></ul>
-            <ul><a href='#' class='blacktext' style="margin-right: 30px">Transform</a></ul>
-            <ul><a href='ProfilePage.php' class='blacktext' style="margin-right: 10px">Profile</a></ul>
-
-
+            <ul><a href='HomePage.php' class='blacktext' style="margin-right: 5px">Home</a></ul>
+            <ul><a href='CoursesPage.php' class='blacktext' style="margin-right: 5px">Courses</a></ul>
+            <ul><a href='MycoursesPage.php' class='blacktext' style="margin-right: 5px">My Courses</a></ul>
+            <ul><a href='#' class='blacktext' style="margin-right: 5px">Transform</a></ul>
+            <ul><a href='ProfilePage.php' class='blacktext' style="margin-right: 30px">Profile</a></ul>
             <div id="accountMenu" class="dropdown">
                 <button class="dropbtn" id="accountButton">
                     <?php echo $username; ?>
@@ -49,47 +49,46 @@ $user_ID = $_SESSION['user_ID'];
     </div>
 
     <h1>บทเรียนทั้งหมด</h1>
-    <?php
-    include 'connect.php';
-    // Fetch lessons from the database
-    $sql = "SELECT * FROM lessons";
-    $result = mysqli_query($conn, $sql);
-    while ($row = mysqli_fetch_array($result)) {
-        ?>
-        <div class="course-card">
-            <span class="heart-icon" onclick="toggleSaveLesson(this, <?= $row['lessonID'] ?>)">&#x2661;</span>
-            <a href="lesson.php?LessonID=<?= $row['LessonID'] ?>">
-                <img src="../image/<?= htmlspecialchars($row['Image']) ?>" alt="Image">
-            </a>
-            <h4><?= htmlspecialchars($row['LessonName']); ?></h4>
-        </div>
 
+    <div class="course-list">
         <?php
-    }
-    mysqli_close($conn);
-    ?>
+        include 'connect.php';
+        // Fetch lessons from the database
+        $sql = "SELECT * FROM lessons";
+        $result = mysqli_query($conn, $sql);
+        while ($row = mysqli_fetch_array($result)) {
+        ?>
+            <div class="course-card">
+                <span class="heart-icon" onclick="toggleSaveLesson(this, <?= $row['lessonID'] ?>)">&#x2661;</span>
+                <img src="<?= htmlspecialchars($row['cover_image']) ?>" alt="Image">
+                <div class="course-info">
+                    <h4><?= htmlspecialchars($row['lessonName']); ?></h4>
+                    <p>รายละเอียด: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <a href="lesson.php?lessonID=<?= $row['lessonID'] ?>" class="access-btn">เข้าสู่บทเรียน</a>
+            </div>
+        <?php
+        }
+        mysqli_close($conn);
+        ?>
+    </div>
 
-    <script src="js/jsdropdown.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const savedCourses = JSON.parse(localStorage.getItem("myCourses")) || [];
             document.querySelectorAll('.course-card').forEach(card => {
-                const lessonID = card.getAttribute('data-lesson-id');
-                fetch(`check_favorite.php?LessonID=${lessonID}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.isFavorite) {
-                            const heartIcon = card.querySelector('.heart-icon');
-                            heartIcon.classList.add('saved');
-                            heartIcon.innerHTML = '&#x2665;'; // Filled heart
-                        }
-                    });
+                const heartIcon = card.querySelector('.heart-icon');
+                const lessonID = heartIcon.getAttribute('data-lesson-id');
+                if (savedCourses.some(course => course.id === parseInt(lessonID))) {
+                    heartIcon.classList.add('saved');
+                    heartIcon.innerHTML = '&#x2665;';
+                }
             });
         });
 
         function toggleSaveLesson(element, lessonID) {
             const card = element.closest('.course-card');
-            const lessonName = card.getAttribute('data-lesson');
+            const lessonName = card.querySelector('h4').textContent;
             const lessonImage = card.querySelector('img').src;
 
             let savedCourses = JSON.parse(localStorage.getItem("myCourses")) || [];
@@ -99,12 +98,12 @@ $user_ID = $_SESSION['user_ID'];
             if (courseIndex !== -1) {
                 savedCourses.splice(courseIndex, 1);
                 element.classList.remove('saved');
-                element.innerHTML = '&#x2661;'; // Outline heart
+                element.innerHTML = '&#x2661;';
                 removeFromDatabase(lessonID);
             } else {
                 savedCourses.push(course);
                 element.classList.add('saved');
-                element.innerHTML = '&#x2665;'; // Filled heart
+                element.innerHTML = '&#x2665;';
                 addToDatabase(lessonID);
             }
 
@@ -117,8 +116,13 @@ $user_ID = $_SESSION['user_ID'];
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `LessonID=${lessonID}`
-            });
+                body: `lessonID=${lessonID}`
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('เพิ่มลงในฐานข้อมูลแล้ว');
+                    }
+                });
         }
 
         function removeFromDatabase(lessonID) {
@@ -127,8 +131,13 @@ $user_ID = $_SESSION['user_ID'];
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `LessonID=${lessonID}`
-            });
+                body: `lessonID=${lessonID}`
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('ลบออกจากฐานข้อมูลแล้ว');
+                    }
+                });
         }
     </script>
 </body>

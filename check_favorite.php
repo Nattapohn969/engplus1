@@ -3,9 +3,9 @@ session_start();
 include 'connect.php';
 
 $user_ID = $_SESSION['user_ID'];
-$LessonID = intval($_GET['LessonID']);
+$LessonID = intval($_GET['lessonID']);
 
-$sql = "SELECT COUNT(*) as count FROM favorite_lesson WHERE user_ID = ? AND LessonID = ?";
+$sql = "SELECT COUNT(*) as count FROM favorite_lesson WHERE user_ID = ? AND lessonID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param('ii', $user_ID, $LessonID);
 $stmt->execute();

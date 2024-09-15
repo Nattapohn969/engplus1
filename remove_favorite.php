@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_ID'])) {
 $user_ID = $_SESSION['user_ID'];
 $LessonID = intval($_POST['lessonID']);
 
-$sql = "INSERT INTO favorite_lesson (user_ID, lessonID, added_at) VALUES (?, ?, NOW())";
+$sql = "DELETE FROM favorite_lesson WHERE user_ID = ? AND lessonID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param('ii', $user_ID, $LessonID);
 $stmt->execute();
