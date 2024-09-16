@@ -1,11 +1,16 @@
 <?php
 session_start();
-if (isset($_SESSION['username'])) {
+
+// Check if the user is logged in and has the Learner role
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'Learner') {
+    header('Location: login.php');
+    exit;
 }
 
 // Fetch user information from the session
 $username = htmlspecialchars($_SESSION['username']);
 $user_ID = $_SESSION['user_ID'];
+
 
 include 'connect.php'; // Connect to the database
 

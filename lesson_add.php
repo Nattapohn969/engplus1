@@ -56,7 +56,7 @@
                 </div>
 
                 <div class="lesson-name-container">
-                    <label for="lessonName">Lesson Name:</label>
+                    <label for="lessonName">🪄Lesson Name:</label>
                     <input type="text" id="lessonName" name="lessonName" placeholder="Enter lesson name here..."
                         required />
 
