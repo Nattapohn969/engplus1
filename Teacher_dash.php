@@ -39,7 +39,13 @@ $username = htmlspecialchars($_SESSION['username']);
             </div>
             <div id="accountMenu" class="dropdown">
                 <button class="dropbtn" id="accountButton">
-                    <?php echo $username; ?>
+                    <?php
+                    echo htmlspecialchars($_SESSION['username']);
+                    // แสดงบทบาทของผู้ใช้
+                    if (isset($_SESSION['role'])) {
+                        echo " (" . htmlspecialchars($_SESSION['role']) . ")";
+                    }
+                    ?>
                 </button>
                 <div id="dropdownContent" class="dropdown-content">
                     <a href="logout.php">Logout</a>
