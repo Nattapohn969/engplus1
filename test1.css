@@ -1,0 +1,177 @@
+  /* สไตล์ของหน้า */
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #f0f4f8;
+            /* สีพื้นหลัง */
+            margin: 0;
+            padding: 20px;
+            /* เว้นระยะด้านใน */
+        }
+
+        .container {
+            max-width: 700px;
+            /* ความกว้างสูงสุดของคอนเทนเนอร์ */
+            margin: 0 auto;
+            /* จัดกลาง */
+            padding: 20px;
+            /* เว้นระยะด้านใน */
+            background-color: #fff;
+            /* สีพื้นหลังของคอนเทนเนอร์ */
+            border-radius: 8px;
+            /* มุมมน */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            /* เงา */
+        }
+
+        .header {
+            text-align: center;
+            /* จัดกลางข้อความ */
+            margin-bottom: 20px;
+            /* เว้นระยะด้านล่าง */
+        }
+
+        .header h1 {
+            font-size: 24px;
+            /* ขนาดฟอนต์ */
+            color: #333;
+            /* สีฟอนต์ */
+        }
+
+        .lesson-name {
+            margin-bottom: 20px;
+            /* เว้นระยะด้านล่าง */
+            font-size: 18px;
+            /* ขนาดฟอนต์ */
+            color: #555;
+            /* สีฟอนต์ */
+        }
+
+        .question-block {
+            border: 1px solid #ddd;
+            /* กรอบ */
+            padding: 12px;
+            /* เว้นระยะด้านใน */
+            margin-bottom: 15px;
+            /* เว้นระยะด้านล่าง */
+            border-radius: 6px;
+            /* มุมมน */
+            background-color: #f9f9f9;
+            /* สีพื้นหลัง */
+            transition: box-shadow 0.3s ease;
+            /* เอฟเฟกต์การเปลี่ยนแปลงเงา */
+        }
+
+        .question-block:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            /* เงาเมื่อชี้เมาส์ */
+        }
+
+        .question-number {
+            font-weight: bold;
+            /* ตัวหนา */
+            color: #555;
+            /* สีฟอนต์ */
+            font-size: 18px;
+            /* ขนาดฟอนต์ */
+        }
+
+        .choice {
+            margin-left: 20px;
+            /* เว้นระยะซ้าย */
+            margin-bottom: 8px;
+            /* เว้นระยะด้านล่าง */
+            position: relative;
+            /* ทำให้ตำแหน่งเป็นแบบสัมพัทธ์ */
+            cursor: pointer;
+            /* เปลี่ยนเคอร์เซอร์ */
+        }
+
+        .choice input {
+            display: none;
+            /* ซ่อนปุ่มวิทยุ */
+        }
+
+        .choice-label {
+            padding: 10px;
+            /* เว้นระยะด้านใน */
+            border: 2px solid #ddd;
+            /* กรอบ */
+            border-radius: 6px;
+            /* มุมมน */
+            background-color: #fff;
+            /* สีพื้นหลัง */
+            display: block;
+            /* แสดงเป็นบล็อก */
+            transition: background-color 0.3s, border-color 0.3s;
+            /* เอฟเฟกต์การเปลี่ยนสี */
+        }
+
+        .choice-label:hover {
+            background-color: #e9f5ff;
+            /* สีพื้นหลังเมื่อชี้เมาส์ */
+            border-color: #007BFF;
+            /* สีกรอบเมื่อชี้เมาส์ */
+        }
+
+        .choice input:checked+.choice-label {
+            background-color: #007BFF;
+            /* สีพื้นหลังเมื่อเลือก */
+            border-color: #0056b3;
+            /* สีกรอบเมื่อเลือก */
+            color: #fff;
+            /* สีฟอนต์เมื่อเลือก */
+        }
+
+        .submit-btn {
+            display: block;
+            /* แสดงเป็นบล็อก */
+            width: 100%;
+            /* ความกว้าง 100% */
+            padding: 12px;
+            /* เว้นระยะด้านใน */
+            font-size: 18px;
+            /* ขนาดฟอนต์ */
+            background-color: #3bbd7e;
+            /* สีพื้นหลังปุ่ม */
+            color: #fff;
+            /* สีฟอนต์ */
+            border: none;
+            /* ไม่มีกรอบ */
+            border-radius: 6px;
+            /* มุมมน */
+            cursor: pointer;
+            /* เปลี่ยนเคอร์เซอร์ */
+            transition: background-color 0.3s ease;
+            /* เอฟเฟกต์การเปลี่ยนแปลงสีพื้นหลัง */
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+            /* สีพื้นหลังเมื่อชี้เมาส์ */
+        }
+
+        .question-divider {
+            height: 1px;
+            /* ความสูงของเส้นแบ่ง */
+            background-color: #ddd;
+            /* สีของเส้นแบ่ง */
+            margin: 10px 0;
+            /* เว้นระยะด้านบนและด้านล่าง */
+        }
+
+        .no-questions {
+            text-align: center;
+            /* จัดกลางข้อความ */
+            font-size: 18px;
+            /* ขนาดฟอนต์ */
+            color: #999;
+            /* สีฟอนต์ */
+            padding: 20px;
+            /* เว้นระยะด้านใน */
+            border: 1px dashed #ddd;
+            /* กรอบแบบจุด */
+            border-radius: 6px;
+            /* มุมมน */
+            background-color: #f9f9f9;
+            /* สีพื้นหลัง */
+        }

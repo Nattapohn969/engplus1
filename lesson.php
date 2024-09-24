@@ -13,7 +13,7 @@ if ($lessonID <= 0) {
 }
 
 // ดึงข้อมูลบทเรียน
-$stmt = $conn->prepare("SELECT * FROM lessons WHERE lessonID = ?");
+$stmt = $conn->prepare("SELECT lessonName, lessonDescription, page_color, container_color, text_color, cover_image FROM lessons WHERE lessonID = ?");
 $stmt->bind_param("i", $lessonID);
 $stmt->execute();
 $lesson = $stmt->get_result()->fetch_assoc();
@@ -39,9 +39,7 @@ $sections = $stmt->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400&display=swap" rel="stylesheet">
     <link href="css/style1.css" rel="stylesheet" />
     <title><?php echo htmlspecialchars($lesson['lessonName'], ENT_QUOTES, 'UTF-8'); ?></title>
     <style>
@@ -80,7 +78,15 @@ $sections = $stmt->get_result();
             ;
             margin: 20px 0;
             font-size: 2.5rem;
-            /* Use rem for responsive font size */
+        }
+
+        .lesson-description {
+            text-align: center;
+            color:
+                <?php echo htmlspecialchars($lesson['text_color'], ENT_QUOTES, 'UTF-8'); ?>
+            ;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
         }
 
         .cover-image {
@@ -131,16 +137,13 @@ $sections = $stmt->get_result();
             height: auto;
         }
 
-        /* Media queries for smaller screens */
         @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
-                /* Adjust font size for tablets */
             }
 
             .cover-image img {
                 max-width: 90%;
-                /* Adjust image size for tablets */
             }
 
             .container {
@@ -156,12 +159,10 @@ $sections = $stmt->get_result();
         @media (max-width: 480px) {
             h1 {
                 font-size: 1.5rem;
-                /* Adjust font size for mobile devices */
             }
 
             .cover-image img {
                 max-width: 100%;
-                /* Adjust image size for mobile devices */
             }
 
             .container {
@@ -173,12 +174,30 @@ $sections = $stmt->get_result();
                 padding: 10px;
             }
         }
+
+        /* ปุ่มทำเเบบฝึกหัด */
+        .test-button a {
+            display: inline-block;
+            padding: 10px 20px;
+            color: white;
+            background-color: gray;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .test-button a:hover {
+            background-color: darkgray;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <h1><?php echo htmlspecialchars($lesson['lessonName'], ENT_QUOTES, 'UTF-8'); ?></h1>
+
+        <!-- Display Lesson Description -->
+
 
         <!-- Display Cover Image -->
         <?php if (!empty($lesson['cover_image'])): ?>
@@ -187,11 +206,16 @@ $sections = $stmt->get_result();
             </div>
         <?php endif; ?>
 
+        <?php if (!empty($lesson['lessonDescription'])): ?>
+            <p class="lesson-description">
+                <?php echo htmlspecialchars_decode($lesson['lessonDescription']); ?>
+            </p>
+        <?php endif; ?>
+
         <?php if ($sections->num_rows > 0): ?>
             <?php while ($section = $sections->fetch_assoc()): ?>
                 <div class="section"
                     style="background-color: <?php echo htmlspecialchars($section['section_color'], ENT_QUOTES, 'UTF-8'); ?>;">
-
                     <?php
                     // ดึงข้อมูลเนื้อหาประเภทข้อความ
                     $stmt = $conn->prepare("SELECT * FROM text_content WHERE sectionID = ?");
@@ -200,9 +224,7 @@ $sections = $stmt->get_result();
                     $texts = $stmt->get_result();
 
                     while ($text = $texts->fetch_assoc()): ?>
-                        <div class="text-content"
-                            style="color: <?php echo htmlspecialchars($text['text_color'], ENT_QUOTES, 'UTF-8'); ?>;">
-                            <!-- แสดงเนื้อหาที่มีการจัดรูปแบบ HTML -->
+                        <div class="text-content">
                             <?php echo htmlspecialchars_decode($text['content']); ?>
                         </div>
                     <?php endwhile; ?>
@@ -232,20 +254,88 @@ $sections = $stmt->get_result();
                             <video controls src="<?php echo htmlspecialchars($video['video_url'], ENT_QUOTES, 'UTF-8'); ?>"></video>
                         </div>
                     <?php endwhile; ?>
-
                 </div>
             <?php endwhile; ?>
         <?php else: ?>
             <p>No sections available for this lesson.</p>
         <?php endif; ?>
 
-        <!-- ปุ่มลิงก์ไปยังหน้าแบบทดสอบ -->
+        <!-- Test Button Section -->
         <div class="test-button" style="text-align: center; margin-top: 20px;">
-            <a href="testPage.php?lessonID=<?php echo $lessonID; ?>" class="btn-test"><h2>ทำแบบทดสอบ</h2></a>
+            <a href="testPage.php?lessonID=<?php echo $lessonID; ?>" class="btn-test"
+                style="pointer-events: none; opacity: 0.5;">
+                <h2>ทำแบบทดสอบ</h2>
+            </a>
         </div>
+
     </div>
 
     <?php $conn->close(); // ปิดการเชื่อมต่อฐานข้อมูล ?>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const videos = document.querySelectorAll("video");
+        const testButton = document.querySelector(".btn-test");
+
+        if (videos.length === 0) {
+            // If no videos, enable the test button by default
+            testButton.style.pointerEvents = "auto";
+            testButton.style.opacity = "1";
+            return;
+        }
+
+        let watchedVideos = 0;
+
+        videos.forEach(video => {
+            let lastTime = 0; // เก็บตำแหน่งล่าสุดที่ดู
+            let isVideoEnded = false; // ตัวแปรตรวจสอบว่าวิดีโอจบหรือยัง
+            let isSeeking = false; // ตรวจสอบว่าผู้ใช้กำลังเลื่อนอยู่หรือไม่
+
+            // ป้องกันการเลื่อนข้ามวิดีโอ
+            video.addEventListener("timeupdate", function () {
+                if (!isVideoEnded && !isSeeking && video.currentTime > lastTime + 1) {
+                    video.currentTime = lastTime; // ย้อนกลับไปที่ตำแหน่งเดิม
+                } else {
+                    lastTime = video.currentTime; // อัปเดตตำแหน่งปัจจุบันที่ดู
+                }
+            });
+
+            // เมื่อผู้ใช้พยายามเลื่อนวิดีโอ
+            video.addEventListener("seeking", function () {
+                if (!isVideoEnded) {
+                    isSeeking = true; // เริ่มสถานะเลื่อน
+                    video.pause(); // หยุดวิดีโอระหว่างการเลื่อน
+                }
+            });
+
+            // เมื่อหยุดการเลื่อน
+            video.addEventListener("seeked", function () {
+                isSeeking = false; // จบสถานะเลื่อน
+                if (!isVideoEnded) {
+                    video.play(); // เริ่มเล่นเมื่อหยุดเลื่อน
+                }
+            });
+
+            // เมื่อวิดีโอจบ
+            video.addEventListener("ended", function () {
+                isVideoEnded = true; // ตั้งค่าว่าวิดีโอจบแล้ว
+                watchedVideos++;
+
+                // ถ้าดูวิดีโอทุกตัวจบแล้ว เปิดการใช้งานปุ่มทำแบบทดสอบ
+                if (watchedVideos === videos.length) {
+                    testButton.style.pointerEvents = "auto";
+                    testButton.style.opacity = "1"; // แสดงปุ่มทำแบบทดสอบ
+                    testButton.style.backgroundColor = "#4CAF50"; // เปลี่ยนสีปุ่มเป็นเขียว
+                    testButton.style.color = "#FFFFFF"; // เปลี่ยนสีตัวอักษรเป็นขาว
+                }
+            });
+
+            // ป้องกันการคลิกขวาบนวิดีโอ
+            video.addEventListener("contextmenu", function (e) {
+                e.preventDefault();
+            });
+        });
+    });
+</script>
 
 </html>

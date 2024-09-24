@@ -150,8 +150,6 @@
             if (selectedValue === "text") {
                 contentDiv.innerHTML = `
                     <textarea id="contentText${sectionNumber}" name="contentText${sectionNumber}" placeholder="Enter your text here..."></textarea>
-                    <label for="textColor${sectionNumber}">Text Color:</label>
-                    <input type="color" id="textColor${sectionNumber}" name="textColor${sectionNumber}" onchange="updateTextColor(${sectionNumber})" />
                 `;
                 initializeEditor(sectionNumber);
             } else if (selectedValue === "image") {

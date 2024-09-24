@@ -1,0 +1,107 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e9ecef;
+    color: #343a40;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.word {
+    display: inline-block;
+    padding: 12px 15px;
+    margin: 5px;
+    background-color: #28a745;
+    color: #ffffff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.word:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+.word.used {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+#answer-box {
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    height: 120px;
+    padding: 15px;
+    min-width: 300px;
+    overflow: auto;
+    background-color: #f8f9fa;
+    margin-bottom: 15px;
+}
+
+#reset-button {
+    margin-top: 10px;
+    background-color: #ffc107;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#reset-button:hover {
+    background-color: #e0a800;
+    transform: scale(1.05);
+}
+
+.question-block {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+    background-color: #fdfdfe;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.question-number {
+    font-weight: bold;
+    color: #495057;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.question-feedback {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.feedback-correct {
+    color: #28a745; /* Green for correct message */
+}
+
+#check-answers-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#check-answers-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}

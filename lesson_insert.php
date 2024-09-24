@@ -68,11 +68,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $content = $_POST["contentText$sectionNum"];
                 $textColorContent = $_POST["textColor$sectionNum"] ?? '';
 
-                $stmt = $conn->prepare("INSERT INTO text_content (sectionID, content, text_color) VALUES (?, ?, ?)");
+                $stmt = $conn->prepare("INSERT INTO text_content (sectionID, content) VALUES (?, ?)");
                 if (!$stmt) {
                     throw new Exception("Prepare statement failed: " . $conn->error);
                 }
-                $stmt->bind_param("iss", $sectionID, $content, $textColorContent);
+                $stmt->bind_param("is", $sectionID, $content);
                 $stmt->execute();
 
             } elseif ($contentType === "image" && isset($_FILES["contentImage$sectionNum"])) {

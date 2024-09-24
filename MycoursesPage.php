@@ -53,12 +53,17 @@ $conn->close();
     <link href="MycoursesPage.css" rel="stylesheet" />
     <title>ENG PLUS</title>
 </head>
+<style>
+    h1 {
+        padding-left: 20px;
+    }
+</style>
 
 <body>
     <div class='navbar'>
         <img src='assets/img/LogoEngPlusNew.png' width='160px' height='auto'>
         <div class='innavbar'>
-            <ul><a href='HomePage.php' class='blacktext' style="margin-right: 5px">Home</a></ul>
+            <!-- <ul><a href='HomePage.php' class='blacktext' style="margin-right: 5px">Home</a></ul> -->
             <ul><a href='CoursesPage.php' class='blacktext' style="margin-right: 5px">Courses</a></ul>
             <ul><a href='MycoursesPage.php' class='blacktext' style="margin-right: 5px">My Courses</a></ul>
             <ul><a href='#' class='blacktext' style="margin-right: 5px">Transform</a></ul>
@@ -77,7 +82,6 @@ $conn->close();
                     <a href="logout.php">Logout</a>
                 </div>
             </div>
-
         </div>
     </div>
 

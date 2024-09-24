@@ -23,105 +23,14 @@ $user_ID = $_SESSION['user_ID'];
         rel="stylesheet">
     <link href="CoursesPage.css" rel="stylesheet" />
     <title>ENG PLUS</title>
-    <!-- <style>
-        .course-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin: 20px;
-        }
-
-        .course-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            background-color: #f0f0f0;
-            width: 80%;
-            height: 200px; /* Set a fixed height to match the design */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .course-image {
-            width: 200px;
-            height: 150px;
-            background-color: #e0e0e0;
-            background-image: url('path_to_your_placeholder_image'); /* Use a placeholder image */
-            background-size: cover;
-            background-position: center;
-            border-radius: 10px;
-        }
-
-        .course-info {
-            flex-grow: 1;
-            margin-left: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .course-info h4 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: #333;
-        }
-
-        .course-info p {
-            margin: 10px 0;
-            font-size: 1rem;
-            color: #777;
-        }
-
-        .heart-icon {
-            font-size: 2rem;
-            cursor: pointer;
-            margin-right: 20px;
-        }
-
-        .heart-icon.saved {
-            color: red;
-        }
-
-        .access-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            align-self: flex-end; /* Align the button to the right */
-        }
-
-        .access-btn:hover {
-            background-color: #45a049;
-        }
-        
-        .heart-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .heart-container .heart-icon {
-            font-size: 1.8rem;
-            cursor: pointer;
-        }
-
-        .heart-container .heart-icon.saved {
-            color: red;
-        }
-    </style> -->
+    
 </head>
 
 <body>
     <div class='navbar'>
         <img src='assets/img/LogoEngPlusNew.png' width='160px' height='auto'>
         <div class='innavbar'>
-            <ul><a href='HomePage.php' class='blacktext' style="margin-right: 5px">Home</a></ul>
+            <!-- <ul><a href='HomePage.php' class='blacktext' style="margin-right: 5px">Home</a></ul> -->
             <ul><a href='CoursesPage.php' class='blacktext' style="margin-right: 5px">Courses</a></ul>
             <ul><a href='MycoursesPage.php' class='blacktext' style="margin-right: 5px">My Courses</a></ul>
             <ul><a href='#' class='blacktext' style="margin-right: 5px">Transform</a></ul>

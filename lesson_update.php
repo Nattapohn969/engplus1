@@ -1,75 +1,130 @@
 <?php
-include 'connect.php';
+include 'connect.php'; // เชื่อมต่อกับฐานข้อมูล
 
-// Check if form is submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $lesson_id = $_POST['lessonID'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $lesson_id = $_POST['lesson_id'];
     $lessonName = $_POST['lessonName'];
-    $page_color = $_POST['page_color'];
-    $container_color = $_POST['container_color'];
-    $text_color = $_POST['text_color'];
+    $pageColor = $_POST['page_color'];
+    $containerColor = $_POST['container_color'];
+    $textColor = $_POST['text_color']; // รับค่า text_color จากฟอร์ม
     $lessonDescription = $_POST['lessonDescription'];
+    $coverImage = $_FILES['coverImage']['name'] ?? '';
 
-    // Fetch existing data for comparison
-    $query = "SELECT * FROM lessons WHERE lessonID = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('i', $lesson_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $existingLesson = $result->fetch_assoc();
-
-    // Prepare update fields
-    $updateFields = [];
-    $params = [];
-
-    // Check for changed values
-    if ($lessonName !== $existingLesson['lessonName']) {
-        $updateFields[] = "lessonName = ?";
-        $params[] = $lessonName;
+    // อัปเดตข้อมูลบทเรียน รวมถึง text_color
+    $updateLessonQuery = "UPDATE lessons SET lessonName = ?, page_color = ?, container_color = ?, text_color = ?, lessonDescription = ? WHERE lessonID = ?";
+    $stmt = $conn->prepare($updateLessonQuery);
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error . " SQL: " . $updateLessonQuery);
     }
-    if ($page_color !== $existingLesson['page_color']) {
-        $updateFields[] = "page_color = ?";
-        $params[] = $page_color;
-    }
-    if ($container_color !== $existingLesson['container_color']) {
-        $updateFields[] = "container_color = ?";
-        $params[] = $container_color;
-    }
-    if ($text_color !== $existingLesson['text_color']) {
-        $updateFields[] = "text_color = ?";
-        $params[] = $text_color;
-    }
-    if ($lessonDescription !== $existingLesson['lessonDescription']) {
-        $updateFields[] = "lessonDescription = ?";
-        $params[] = $lessonDescription;
+    $stmt->bind_param('sssssi', $lessonName, $pageColor, $containerColor, $textColor, $lessonDescription, $lesson_id);
+    if (!$stmt->execute()) {
+        die("Execute failed: " . $stmt->error);
     }
 
-    // Handle file uploads (if applicable)
-    if (!empty($_FILES['coverImage']['name'])) {
-        // Process the file upload
-        $coverImage = 'uploads/' . basename($_FILES['coverImage']['name']);
-        move_uploaded_file($_FILES['coverImage']['tmp_name'], $coverImage);
+    // อัปโหลด cover image
+    if ($coverImage) {
+        $targetDir = "uploads/images/";
+        $targetFile = $targetDir . basename($coverImage);
 
-        // Add to update fields
-        $updateFields[] = "cover_image = ?";
-        $params[] = $coverImage;
+        // ตรวจสอบการอัปโหลดไฟล์
+        if (move_uploaded_file($_FILES['coverImage']['tmp_name'], $targetFile)) {
+            $currentCoverImageQuery = "SELECT cover_image FROM lessons WHERE lessonID = ?";
+            $stmt = $conn->prepare($currentCoverImageQuery);
+            if (!$stmt) {
+                die("Prepare failed: " . $conn->error . " SQL: " . $currentCoverImageQuery);
+            }
+            $stmt->bind_param('i', $lesson_id);
+            if (!$stmt->execute()) {
+                die("Execute failed: " . $stmt->error);
+            }
+            $currentCoverImageUrl = $stmt->get_result()->fetch_assoc()['cover_image'];
+
+            // อัปเดตเฉพาะเมื่อมีการเปลี่ยนแปลง
+            if ($targetFile !== $currentCoverImageUrl) {
+                $updateCoverImageQuery = "UPDATE lessons SET cover_image = ? WHERE lessonID = ?";
+                $stmt = $conn->prepare($updateCoverImageQuery);
+                if (!$stmt) {
+                    die("Prepare failed: " . $conn->error . " SQL: " . $updateCoverImageQuery);
+                }
+                $stmt->bind_param('si', $targetFile, $lesson_id);
+                if (!$stmt->execute()) {
+                    die("Execute failed: " . $stmt->error);
+                }
+            }
+        } else {
+            echo "Error uploading file.";
+            exit();
+        }
     }
 
-    // If there are fields to update
-    if (!empty($updateFields)) {
-        $updateQuery = "UPDATE lessons SET " . implode(', ', $updateFields) . " WHERE lessonID = ?";
-        $stmt = $conn->prepare($updateQuery);
-        $params[] = $lesson_id; // Add lessonID for the WHERE clause
+    // ประมวลผล sections
+    $contentTypes = $_POST['contentType'] ?? [];
+    foreach ($contentTypes as $index => $contentType) {
+        $sectionID = $index + 1; // sectionID ควรตรงกับ index ที่ส่งมาจากฟอร์ม
+        $sectionColor = $_POST['sectionColor' . ($index + 1)] ?? '';
+        $content = $_POST['content' . ($index + 1)] ?? '';
 
-        // Bind parameters dynamically
-        $types = str_repeat('s', count($params) - 1) . 'i'; // 's' for strings, 'i' for integer
-        $stmt->bind_param($types, ...$params);
-        $stmt->execute();
+        // อัปเดตข้อมูล sections
+        $updateSectionQuery = "UPDATE sections SET section_color = ?, contentType = ? WHERE sectionID = ?";
+        $stmt = $conn->prepare($updateSectionQuery);
+        if (!$stmt) {
+            die("Prepare failed: " . $conn->error . " SQL: " . $updateSectionQuery);
+        }
+        $stmt->bind_param('ssi', $sectionColor, $contentType, $sectionID);
+        if (!$stmt->execute()) {
+            die("Execute failed: " . $stmt->error);
+        }
+
+        // อัปเดตเนื้อหาตามประเภท
+        if ($contentType === 'text') {
+            // อัปเดตข้อมูลใน text_content
+            $updateTextContentQuery = "UPDATE text_content SET content = ? WHERE sectionID = ?";
+            $stmt = $conn->prepare($updateTextContentQuery);
+            if (!$stmt) {
+                die("Prepare failed: " . $conn->error . " SQL: " . $updateTextContentQuery);
+            }
+            $stmt->bind_param('si', $content, $sectionID);
+            if (!$stmt->execute()) {
+                die("Execute failed: " . $stmt->error);
+            }
+        } elseif ($contentType === 'images') {
+            // จัดการเนื้อหาภาพ
+            $imageFile = $_FILES['contentImage' . ($index + 1)]['name'] ?? '';
+            if ($imageFile) {
+                $imageTargetDir = "uploads/images/";
+                $imageTargetFile = $imageTargetDir . basename($imageFile);
+                move_uploaded_file($_FILES['contentImage' . ($index + 1)]['tmp_name'], $imageTargetFile);
+
+                // อัปเดตข้อมูลใน image_content
+                $updateImageContentQuery = "UPDATE images SET image_url = ? WHERE sectionID = ?";
+                $stmt = $conn->prepare($updateImageContentQuery);
+                if (!$stmt) {
+                    die("Prepare failed: " . $conn->error . " SQL: " . $updateImageContentQuery);
+                }
+                $stmt->bind_param('si', $imageTargetFile, $sectionID);
+                if (!$stmt->execute()) {
+                    die("Execute failed: " . $stmt->error);
+                }
+            }
+        } elseif ($contentType === 'video') {
+            // จัดการเนื้อหาวิดีโอ
+            $videoUrl = $_POST['videoUrl' . ($index + 1)] ?? '';
+            $updateVideoContentQuery = "UPDATE videos SET video_url = ? WHERE sectionID = ?";
+            $stmt = $conn->prepare($updateVideoContentQuery);
+            if (!$stmt) {
+                die("Prepare failed: " . $conn->error . " SQL: " . $updateVideoContentQuery);
+            }
+            $stmt->bind_param('si', $videoUrl, $sectionID);
+            if (!$stmt->execute()) {
+                die("Execute failed: " . $stmt->error);
+            }
+        }
     }
 
-    // Update sections if necessary (similar logic as above)
-    // ...
-
-    echo "Lesson updated successfully.";
+    // ส่งผู้ใช้ไปยังหน้าบทเรียน
+    header("Location: lesson.php?lessonID=" . $lesson_id);
+    exit();
+} else {
+    echo "Invalid request.";
 }
 ?>

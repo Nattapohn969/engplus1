@@ -1,109 +1,120 @@
 <?php
 // Connect to the database
-include 'connect.php';
+include 'connect.php';  // เรียกไฟล์ connect.php เพื่อเชื่อมต่อกับฐานข้อมูล
 
 // Check if lessonID is passed
-if (isset($_GET['lessonID'])) {
-    $lesson_id = $_GET['lessonID'];
+if (isset($_GET['lessonID'])) {  // ตรวจสอบว่ามีการส่งค่า lessonID ผ่าน URL หรือไม่
+    $lesson_id = $_GET['lessonID'];  // รับค่า lessonID จาก URL และเก็บในตัวแปร $lesson_id
 
     // Fetch lesson data from the database
-    $query = "SELECT * FROM lessons WHERE lessonID = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('i', $lesson_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $query = "SELECT * FROM lessons WHERE lessonID = ?";  // เตรียมคำสั่ง SQL เพื่อดึงข้อมูลบทเรียนจากฐานข้อมูลที่มี lessonID ตรงกับที่ได้รับ
+    $stmt = $conn->prepare($query);  // เตรียมการทำงานของคำสั่ง SQL แบบ Prepared Statement เพื่อป้องกัน SQL Injection
+    $stmt->bind_param('i', $lesson_id);  // กำหนดค่าให้กับพารามิเตอร์ที่ใช้ใน SQL (เลขแบบ integer)
+    $stmt->execute();  // ทำการ execute คำสั่ง SQL
+    $result = $stmt->get_result();  // ดึงผลลัพธ์จากการ execute มาเก็บในตัวแปร $result
 
     // Check if the lesson is found
-    if ($result->num_rows == 1) {
-        $lesson = $result->fetch_assoc();
+    if ($result->num_rows == 1) {  // ตรวจสอบว่าพบข้อมูลบทเรียนหรือไม่ (หากเจอ จะมีจำนวนแถว = 1)
+        $lesson = $result->fetch_assoc();  // เก็บข้อมูลบทเรียนเป็นอาเรย์เชื่อมโยง
     } else {
-        echo "Lesson not found.";
+        echo "Lesson not found.";  // หากไม่พบบทเรียน แสดงข้อความและหยุดการทำงาน
         exit;
     }
 } else {
-    echo "No lesson ID provided.";
+    echo "No lesson ID provided.";  // หากไม่มี lessonID ถูกส่งมา แสดงข้อความและหยุดการทำงาน
     exit;
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <!-- ส่วนหัว -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">  <!-- โหลดฟอนต์จาก Google Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.ckeditor.com/ckeditor5/35.0.1/classic/ckeditor.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="css/addlesson.css" rel="stylesheet" />
-    <link href="css/stylead.css" rel="stylesheet" />
-    <title>Edit Lesson</title>
+    <script src="https://cdn.ckeditor.com/ckeditor5/35.0.1/classic/ckeditor.js"></script>  <!-- โหลด CKEditor สำหรับแก้ไขข้อความ -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">  <!-- โหลด CSS สำหรับ SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>  <!-- โหลด JS สำหรับ SweetAlert2 -->
+    <link href="css/addlesson.css" rel="stylesheet" />  <!-- ลิงก์ไปยังไฟล์ CSS สำหรับการจัดรูปแบบของฟอร์ม -->
+    <link href="css/stylead.css" rel="stylesheet" />  <!-- ลิงก์ไปยังไฟล์ CSS เพิ่มเติม -->
+    <title>Edit Lesson</title>  <!-- ชื่อของหน้าเว็บ -->
 </head>
 
 <body>
-    <?php include 'navbar.php'; ?>
+    <?php include 'navbar.php'; ?>  <!-- เรียกใช้ Navbar จากไฟล์ navbar.php -->
 
+    <!-- ส่วนเนื้อหาหลัก -->
     <div class="container">
         <div class="header">
-            <h1>Edit Lesson</h1>
+            <h1>Edit Lesson</h1>  <!-- หัวข้อหลักของหน้าเว็บ -->
         </div>
 
-        <!-- Form to edit the lesson -->
+        <!-- ฟอร์มแก้ไขบทเรียน -->
         <form action='lesson_update.php' method="post" enctype="multipart/form-data">
             <input type="hidden" name="lesson_id"
-                value="<?php echo htmlspecialchars($lesson['lessonID'], ENT_QUOTES, 'UTF-8'); ?>" />
+                value="<?php echo htmlspecialchars($lesson['lessonID'], ENT_QUOTES, 'UTF-8'); ?>" />  <!-- เก็บค่า lessonID ไว้ในฟอร์มอย่างปลอดภัย -->
 
-            <!-- Page background color selection -->
+            <!-- การเลือกสีพื้นหลังของหน้า -->
             <div class="color-controls">
-                <label for="page_color">Page Background Color:</label>
+                <label for="page_color">Page Background Color:</label>  <!-- ป้ายกำกับสำหรับสีพื้นหลังของหน้า -->
                 <input type="color" id="page_color" name="page_color"
                     value="<?php echo htmlspecialchars($lesson['page_color'], ENT_QUOTES, 'UTF-8'); ?>"
-                    onchange="updatePageColor()" />
+                    onchange="updatePageColor()" />  <!-- อินพุตสำหรับเลือกสีและอัปเดตสีพื้นหลังเมื่อมีการเปลี่ยนแปลง -->
             </div>
 
             <div class="lesson-container" id="lessonContainer">
-                <!-- Container background color selection -->
+                <!-- การเลือกสีพื้นหลังของคอนเทนเนอร์ -->
                 <div class="color-controls">
-                    <label for="container_color">Container Background Color:</label>
+                    <label for="container_color">Container Background Color:</label>  <!-- ป้ายกำกับสำหรับสีพื้นหลังของคอนเทนเนอร์ -->
                     <input type="color" id="container_color" name="container_color"
                         value="<?php echo htmlspecialchars($lesson['container_color'], ENT_QUOTES, 'UTF-8'); ?>"
-                        onchange="updateContainerColor()" />
+                        onchange="updateContainerColor()" />  <!-- อินพุตสำหรับเลือกสีของคอนเทนเนอร์ -->
                 </div>
 
-                <!-- Edit lesson name and text color -->
+                <!-- การแก้ไขชื่อบทเรียนและสีตัวอักษร -->
                 <div class="lesson-name-container">
-                    <label for="lessonName">Lesson Name:</label>
+                    <label for="lessonName">Lesson Name:</label>  <!-- ป้ายกำกับสำหรับชื่อบทเรียน -->
                     <input type="text" id="lessonName" name="lessonName"
-                        value="<?php echo htmlspecialchars($lesson['lessonName'], ENT_QUOTES, 'UTF-8'); ?>" required />
+                        value="<?php echo htmlspecialchars($lesson['lessonName'], ENT_QUOTES, 'UTF-8'); ?>" required />  <!-- อินพุตสำหรับแก้ไขชื่อบทเรียน -->
 
-                    <label for="text_color">Text Color:</label>
+                    <label for="text_color">Text Color:</label>  <!-- ป้ายกำกับสำหรับสีของข้อความ -->
                     <input type="color" id="text_color" name="text_color"
                         value="<?php echo htmlspecialchars($lesson['text_color'], ENT_QUOTES, 'UTF-8'); ?>"
-                        onchange="changeLessonTextColor()" />
+                        onchange="changeLessonTextColor()" />  <!-- อินพุตสำหรับเลือกสีตัวอักษร -->
                 </div>
 
-                <!-- Cover image upload -->
+                <!-- ส่วนอัปโหลดภาพปก -->
                 <div class="cover-image-controls">
-                    <label for="coverImage">Cover Image:</label>
+                    <label for="coverImage">Cover Image:</label>  <!-- ป้ายกำกับสำหรับอัปโหลดภาพปก -->
                     <input type="file" id="coverImage" name="coverImage" accept="image/*"
-                        onchange="previewCoverImage(event)" />
+                        onchange="previewCoverImage(event)" />  <!-- อินพุตสำหรับเลือกไฟล์ภาพปก -->
                     <div id="coverImagePreview" class="cover-image-preview">
-                        <?php if (!empty($lesson['cover_image'])): ?>
+                        <?php if (!empty($lesson['cover_image'])): ?>  <!-- ตรวจสอบว่ามีภาพปกที่เคยอัปโหลดหรือไม่ -->
                             <img src="<?php echo htmlspecialchars($lesson['cover_image'], ENT_QUOTES, 'UTF-8'); ?>"
-                                alt="Cover Image Preview" style="max-width: 100%; height: auto;">
+                                alt="Cover Image Preview" style="max-width: 100%; height: auto;">  <!-- แสดงตัวอย่างภาพปก -->
                         <?php endif; ?>
                     </div>
                 </div>
 
-                <!-- Edit lesson description -->
+                <!-- ส่วนแก้ไขรายละเอียดของบทเรียน -->
                 <div class="lesson-description-container">
-                    <label for="lessonDescription">Lesson Description:</label>
+                    <label for="lessonDescription">Lesson Description:</label>  <!-- ป้ายกำกับสำหรับรายละเอียดบทเรียน -->
                     <textarea id="lessonDescription"
-                        name="lessonDescription"><?php echo htmlspecialchars($lesson['lessonDescription'], ENT_QUOTES, 'UTF-8'); ?></textarea>
+                        name="lessonDescription"><?php echo htmlspecialchars($lesson['lessonDescription'], ENT_QUOTES, 'UTF-8'); ?></textarea>  <!-- textarea สำหรับแก้ไขรายละเอียดของบทเรียน -->
                 </div>
+
+                <script>
+                    ClassicEditor
+                        .create(document.querySelector('#lessonDescription'))  // สร้าง CKEditor สำหรับ textarea
+                        .catch(error => {
+                            console.error(error);  // แสดง error ถ้าหากเกิดข้อผิดพลาดในการสร้าง CKEditor
+                        });
+                </script>
+
 
                 <!-- Manage lesson sections -->
                 <div id="sections-container">
@@ -156,23 +167,28 @@ if (isset($_GET['lessonID'])) {
                             </select>
 
                             <div id="content<?php echo $sectionCount; ?>" class="section-content">
+
                                 <?php if ($section['contentType'] == 'text'): ?>
-                                    <!-- Show text editor -->
+                                    <!-- Textarea สำหรับเนื้อหาแต่ละ Section -->
                                     <textarea id="editor<?php echo $sectionCount; ?>"
-                                        name="content<?php echo $sectionCount; ?>"><?php echo htmlspecialchars(strip_tags($section['text_content']), ENT_QUOTES, 'UTF-8'); ?></textarea>
-                                    <label for="text_color<?php echo $sectionCount; ?>">Text Color:</label>
-                                    <input type="color" id="text_color<?php echo $sectionCount; ?>"
-                                        name="text_color<?php echo $sectionCount; ?>"
-                                        value="<?php echo htmlspecialchars($section['text_color'], ENT_QUOTES, 'UTF-8'); ?>"
-                                        onchange="updateTextColor(<?php echo $sectionCount; ?>)" />
+                                        name="content<?php echo $sectionCount; ?>"><?php echo htmlspecialchars($section['text_content'], ENT_QUOTES, 'UTF-8'); ?></textarea>
 
                                     <script>
+                                        // ใช้ CKEditor กับ textarea ที่มี id เฉพาะสำหรับแต่ละ Section
                                         ClassicEditor
                                             .create(document.querySelector('#editor<?php echo $sectionCount; ?>'))
+                                            .then(editor => {
+                                                // เมื่อ CKEditor ถูกสร้างขึ้น เราสามารถใช้ editor เพื่อเข้าถึงข้อมูลใน textarea
+                                                editor.model.document.on('change:data', () => {
+                                                    // อัปเดตข้อมูลใน textarea เมื่อมีการเปลี่ยนแปลง
+                                                    document.querySelector('#editor<?php echo $sectionCount; ?>').value = editor.getData();
+                                                });
+                                            })
                                             .catch(error => {
                                                 console.error(error);
                                             });
                                     </script>
+
                                 <?php elseif ($section['contentType'] == 'image'): ?>
                                     <!-- Show image upload option -->
                                     <input type="file" name="contentImage<?php echo $sectionCount; ?>" accept="image/*" />
@@ -211,7 +227,7 @@ if (isset($_GET['lessonID'])) {
 
     <script>
 
-        
+
         // ตั้งค่าสีพื้นหลังของหน้าและคอนเทนเนอร์เมื่อโหลดหน้า
         window.onload = function () {
             updatePageColor(); // ตั้งค่าสีพื้นหลังของหน้า

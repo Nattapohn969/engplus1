@@ -1,34 +1,37 @@
 <?php
+// เริ่มต้นด้วยการเชื่อมต่อฐานข้อมูล
 include 'connect.php';
 
-// รับค่า lessonID จาก URL (หรือใช้ค่าเริ่มต้นเป็น 1)
+// ตรวจสอบว่ามีค่า lessonID ส่งมาหรือไม่ ถ้าไม่มีกำหนดค่าเริ่มต้นเป็น 1
 $lessonID = isset($_GET['lessonID']) ? intval($_GET['lessonID']) : 1;
 
-// สร้างคำสั่ง SQL เพื่อดึงคำถามทั้งหมดสำหรับ lessonID ที่ระบุ
+// กำหนดคำสั่ง SQL เพื่อดึงคำจากตาราง test2 ที่มี lessonID ตรงกับค่าที่กำหนด
 $query = "SELECT word_1, word_2, word_3, word_4, word_5, word_6, word_7, word_8, word_9, word_10 FROM test2 WHERE lessonID = ?";
 
 // เตรียมคำสั่ง SQL
 $stmt = mysqli_prepare($conn, $query);
-
 if (!$stmt) {
+    // หากเกิดข้อผิดพลาดในการเตรียมคำสั่ง SQL ให้แสดงข้อความและหยุดการทำงาน
     die("ไม่สามารถเตรียมคำสั่ง SQL ได้: " . mysqli_error($conn));
 }
 
-// ผูกพารามิเตอร์
+// ผูกค่า lessonID เข้ากับคำสั่ง SQL
 mysqli_stmt_bind_param($stmt, "i", $lessonID);
 
-// ดำเนินการคำสั่ง
+// ดำเนินการคำสั่ง SQL
 mysqli_stmt_execute($stmt);
 
-// รับผลลัพธ์
+// ดึงผลลัพธ์จากการดำเนินการคำสั่ง SQL
 $result = mysqli_stmt_get_result($stmt);
 
+// สร้างอาร์เรย์เพื่อเก็บคำถาม
 $questions = array();
 while ($row = mysqli_fetch_assoc($result)) {
+    // เพิ่มข้อมูลที่ดึงได้ในแต่ละแถวเข้าไปในอาร์เรย์ $questions
     $questions[] = $row;
 }
 
-// ปิดการเชื่อมต่อฐานข้อมูล
+// ปิดการใช้งาน statement และการเชื่อมต่อฐานข้อมูล
 mysqli_stmt_close($stmt);
 mysqli_close($conn);
 ?>
@@ -39,112 +42,7 @@ mysqli_close($conn);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>การฝึกเรียงลำดับคำ</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-
-        .container {
-            width: 80%;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        .word {
-            display: inline-block;
-            padding: 10px;
-            margin: 5px;
-            background-color: #c1e1c1;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .word:hover {
-            background-color: #a0d7a4;
-        }
-
-        .word.used {
-            background-color: #d3d3d3;
-            cursor: not-allowed;
-        }
-
-        #answer-box {
-            border: 2px dashed #ccc;
-            height: 100px;
-            padding: 10px;
-            min-width: 300px;
-            overflow: auto;
-            background-color: #fafafa;
-            border-radius: 4px;
-        }
-
-        #reset-button {
-            margin-top: 10px;
-            background-color: #f4b400;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        #reset-button:hover {
-            background-color: #e6a400;
-        }
-
-        .question-block {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f7f7f7;
-        }
-
-        .question-number {
-            font-weight: bold;
-            color: #555;
-            font-size: 18px;
-            margin-bottom: 15px;
-        }
-
-        .question-feedback {
-            margin-top: 10px;
-            font-weight: bold;
-            color: #e74c3c;
-            /* สีแดงเพื่อแสดงข้อความผิดพลาด */
-        }
-
-        .feedback-correct {
-            color: #2ecc71;
-            /* สีเขียวเพื่อแสดงข้อความถูกต้อง */
-        }
-
-        #check-answers-button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        #check-answers-button:hover {
-            background-color: #2980b9;
-        }
-    </style>
+    <link href="test2.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -167,17 +65,21 @@ mysqli_close($conn);
     <button id="check-answers-button" onclick="checkAllAnswers()">ตรวจสอบคำตอบทั้งหมด</button>
 
     <script>
-        // ข้อมูลจาก PHP
+        // สร้างตัวแปร questions ขึ้นจากข้อมูลที่ดึงมาจาก PHP
         const questions = <?php echo json_encode($questions); ?>;
+        const lessonID = <?php echo $lessonID; ?>; // ส่งค่า lessonID จาก PHP ไปยัง JavaScript
+        // เตรียมคำตอบที่ถูกต้องโดยกรองคำที่มีอยู่และลบช่องว่าง
         const correctAnswers = questions.map(question => {
             return Object.values(question).filter(word => word).map(word => word.trim());
         });
 
+        // ฟังก์ชันแสดงคำในแต่ละคำถาม
         function displayWords(questionIndex) {
-            const words = Object.values(questions[questionIndex]).filter(word => word).map(word => word.trim()).slice(0, 10); // กรองและจำกัดเป็น 10 คำ
+            // ดึงคำที่ไม่ใช่ค่า null ออกมาและทำการสับเรียงลำดับใหม่แบบสุ่ม
+            const words = Object.values(questions[questionIndex]).filter(word => word).map(word => word.trim()).slice(0, 10); 
             const shuffledWords = words.sort(() => 0.5 - Math.random());
             const wordsContainer = document.getElementById('words-container-' + questionIndex);
-            wordsContainer.innerHTML = ''; // ล้างคำที่มีอยู่
+            wordsContainer.innerHTML = ''; 
             shuffledWords.forEach(word => {
                 const wordElement = document.createElement('div');
                 wordElement.classList.add('word');
@@ -187,14 +89,16 @@ mysqli_close($conn);
             });
         }
 
+        // ฟังก์ชันเพิ่มคำไปยังช่องคำตอบ
         function addToAnswer(wordElement, questionIndex) {
             const answerBox = document.getElementById('answer-box-' + questionIndex);
-            const wordClone = wordElement.cloneNode(true);
-            answerBox.appendChild(wordClone);
-            wordElement.classList.add('used');
-            wordElement.onclick = null;
+            const wordClone = wordElement.cloneNode(true); // ทำสำเนาคำ
+            answerBox.appendChild(wordClone); // เพิ่มคำไปที่กล่องคำตอบ
+            wordElement.classList.add('used'); // ทำเครื่องหมายว่าคำนี้ถูกใช้แล้ว
+            wordElement.onclick = null; // ปิดการใช้งานคลิกซ้ำ
         }
 
+        // ฟังก์ชันรีเซ็ตคำตอบ
         function reset(questionIndex) {
             const answerBox = document.getElementById('answer-box-' + questionIndex);
             const wordsContainer = document.getElementById('words-container-' + questionIndex);
@@ -203,36 +107,34 @@ mysqli_close($conn);
             answerBox.innerHTML = ''; // ล้างกล่องคำตอบ
 
             words.forEach(wordElement => {
-                wordElement.classList.remove('used'); // ลบคลาส 'used'
-                wordElement.onclick = () => addToAnswer(wordElement, questionIndex); // เปิดใช้งานการคลิก
+                wordElement.classList.remove('used'); // นำเครื่องหมายว่าใช้แล้วออก
+                wordElement.onclick = () => addToAnswer(wordElement, questionIndex); // เปิดการใช้งานการคลิกอีกครั้ง
             });
         }
 
+        // ฟังก์ชันตรวจสอบคำตอบทั้งหมด
         function checkAllAnswers() {
-            let score = 0;
+            let score = 0; // กำหนดตัวแปรคะแนนเริ่มต้นเป็น 0
 
             questions.forEach((_, index) => {
                 const answerBox = document.getElementById('answer-box-' + index);
                 const selectedWords = Array.from(answerBox.children).map(el => el.innerText.trim());
                 const correctOrder = correctAnswers[index];
 
-                // แสดงข้อมูลเพื่อดีบัก
-                console.log(`คำที่เลือก: ${selectedWords.join(' ')}`);
-                console.log(`คำที่ถูกต้อง: ${correctOrder.join(' ')}`);
-
-                // เปรียบเทียบคำที่เลือกกับคำที่ถูกต้อง
+                // ตรวจสอบว่าคำที่เลือกเรียงลำดับตรงกับคำตอบที่ถูกต้องหรือไม่
                 if (selectedWords.join(' ') === correctOrder.join(' ')) {
                     document.getElementById('feedback-' + index).innerText = 'ถูกต้อง!';
-                    score++;
+                    score++; // เพิ่มคะแนนถ้าตอบถูก
                 } else {
                     document.getElementById('feedback-' + index).innerText = 'ไม่ถูกต้อง ลองใหม่อีกครั้ง.';
                 }
             });
 
-            alert(`คะแนนรวมของคุณคือ ${score} จาก ${questions.length}`);
+            // ส่งคะแนนและ lessonID ไปยัง result.php
+            window.location.href = `results2.php?score=${score}&lessonID=${lessonID}`;
         }
 
-        // เริ่มต้นคำถามทั้งหมดเมื่อหน้าเว็บโหลดเสร็จ
+        // เรียกฟังก์ชันแสดงคำเมื่อโหลดหน้าเว็บ
         window.onload = () => {
             questions.forEach((_, index) => displayWords(index));
         };
