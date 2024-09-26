@@ -57,6 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+
+
+    
+
     // ประมวลผล sections
     $contentTypes = $_POST['contentType'] ?? [];
     foreach ($contentTypes as $index => $contentType) {

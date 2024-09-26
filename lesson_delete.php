@@ -10,6 +10,7 @@ if (isset($_GET['lessonID'])) {
     $conn->begin_transaction();
 
     try {
+
         // ลบข้อมูลรูปภาพที่เกี่ยวข้อง
         $stmt = $conn->prepare("
             DELETE FROM images 
@@ -98,9 +99,9 @@ if (isset($_GET['lessonID'])) {
 
         // ยืนยันการทำธุรกรรม
         $conn->commit();
-        
+
         // เปลี่ยนหน้าไปยังหน้าการจัดการบทเรียน
-        header("Location: lessons_manage.php"); 
+        header("Location: lessons_manage.php");
         exit();
     } catch (Exception $e) {
         // ยกเลิกการทำธุรกรรมหากมีข้อผิดพลาด

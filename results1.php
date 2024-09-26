@@ -33,27 +33,17 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="test1.css" rel="stylesheet" />
     <title>ผลลัพธ์แบบทดสอบ</title>
+
 </head>
+
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>ผลลัพธ์แบบทดสอบ</h1>
-        </div>
-
-        <div class="result-message">
-            <p><?php echo $resultMessage; ?></p>
-        </div>
-
-        <!-- ปุ่มกลับไปหน้าบทเรียน -->
-        <div class="back-to-lesson">
-            <a href="lesson.php?lessonID=<?php echo $lessonID; ?>" class="btn">กลับไปที่บทเรียน</a>
-        </div>
-    </div>
+    <?php include 'rating.php'; ?>
 </body>
+
 </html>
