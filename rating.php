@@ -1,11 +1,16 @@
-<style>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ผลลัพธ์แบบทดสอบ</title>
+    <style>
         body {
             font-family: 'Prompt', sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 20px;
         }
-
         .container {
             max-width: 600px;
             margin: auto;
@@ -14,44 +19,34 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
         }
-
         .header {
             text-align: center;
         }
-
         .result-message {
             text-align: center;
             font-size: 1.2rem;
             margin: 20px 0;
         }
-
         .star-rating {
             display: flex;
             justify-content: center;
             margin: 20px 0;
         }
-
         .star {
             font-size: 4rem;
-            /* ปรับขนาดตามต้องการ */
             cursor: pointer;
             color: gold;
             transition: color 0.2s;
             margin: 0 2px;
-            /* Space between stars */
         }
-
         .star:hover,
         .star:hover~.star {
             color: lightgray;
-            /* เปลี่ยนสีเมื่อวางเมาส์ */
         }
-
         .back-to-lesson {
             text-align: center;
             margin-top: 20px;
         }
-
         .btn {
             padding: 10px 20px;
             background-color: #007bff;
@@ -60,11 +55,12 @@
             border-radius: 5px;
             transition: background-color 0.3s;
         }
-
         .btn:hover {
             background-color: #0056b3;
         }
     </style>
+</head>
+<body>
     <div class="container">
         <div class="header">
             <h1>ผลลัพธ์แบบทดสอบ</h1>
@@ -84,7 +80,7 @@
         </div>
         <p id="rating-message"></p>
 
-        <!-- ปุ่มกลับไปหน้าบทเรียน -->
+        <!-- Back to Lesson Button -->
         <div class="back-to-lesson">
             <a href="lesson.php?lessonID=<?php echo $lessonID; ?>" class="btn">กลับไปที่บทเรียน</a>
         </div>
@@ -96,7 +92,12 @@
                 const rating = this.getAttribute('data-value');
                 document.getElementById('rating-message').innerText = `คุณให้คะแนน: ${rating} ดาว`;
 
-                // ส่งคะแนนไปยังเซิร์ฟเวอร์ผ่าน AJAX
+                // Highlight the selected stars
+                document.querySelectorAll('.star').forEach(s => {
+                    s.style.color = s.getAttribute('data-value') <= rating ? 'gold' : 'lightgray';
+                });
+
+                // AJAX to submit rating
                 const lessonID = <?php echo json_encode($lessonID); ?>;
                 const userID = <?php echo json_encode($user_ID); ?>; // from session
                 const xhr = new XMLHttpRequest();
@@ -107,7 +108,12 @@
                         alert('คะแนนของคุณถูกบันทึกเรียบร้อยแล้ว');
                     }
                 };
+                xhr.onerror = function () {
+                    alert('เกิดข้อผิดพลาดในการบันทึกคะแนน กรุณาลองใหม่อีกครั้ง');
+                };
                 xhr.send(`lessonID=${lessonID}&user_ID=${userID}&rating=${rating}`);
             });
         });
-    </script> 
+    </script>
+</body>
+</html>

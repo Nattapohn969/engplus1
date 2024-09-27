@@ -412,4 +412,4 @@ if (isset($_GET['lessonID'])) {  // ตรวจสอบว่ามีกา�
     </script>
 </body>
 
-</html>เเสดง sectionID
+</html>

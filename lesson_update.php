@@ -59,14 +59,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 
-    
 
     // ประมวลผล sections
     $contentTypes = $_POST['contentType'] ?? [];
+    $sectionNums = $_POST['section_num'] ?? []; // รับค่าจากฟอร์มที่ส่ง section_num มา
+
     foreach ($contentTypes as $index => $contentType) {
-        $sectionID = $index + 1; // sectionID ควรตรงกับ index ที่ส่งมาจากฟอร์ม
-        $sectionColor = $_POST['sectionColor' . ($index + 1)] ?? '';
-        $content = $_POST['content' . ($index + 1)] ?? '';
+        $sectionID = $sectionNums[$index] ?? 0; // ใช้ section_num ที่ส่งมาจากฟอร์มเป็น sectionID
+        $sectionColor = $_POST['sectionColor' . $sectionID] ?? '';
+        $content = $_POST['content' . $sectionID] ?? '';
 
         // อัปเดตข้อมูล sections
         $updateSectionQuery = "UPDATE sections SET section_color = ?, contentType = ? WHERE sectionID = ?";
@@ -93,11 +94,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } elseif ($contentType === 'images') {
             // จัดการเนื้อหาภาพ
-            $imageFile = $_FILES['contentImage' . ($index + 1)]['name'] ?? '';
+            $imageFile = $_FILES['contentImage' . $sectionID]['name'] ?? '';
             if ($imageFile) {
                 $imageTargetDir = "uploads/images/";
                 $imageTargetFile = $imageTargetDir . basename($imageFile);
-                move_uploaded_file($_FILES['contentImage' . ($index + 1)]['tmp_name'], $imageTargetFile);
+                move_uploaded_file($_FILES['contentImage' . $sectionID]['tmp_name'], $imageTargetFile);
 
                 // อัปเดตข้อมูลใน image_content
                 $updateImageContentQuery = "UPDATE images SET image_url = ? WHERE sectionID = ?";
@@ -112,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } elseif ($contentType === 'video') {
             // จัดการเนื้อหาวิดีโอ
-            $videoUrl = $_POST['videoUrl' . ($index + 1)] ?? '';
+            $videoUrl = $_POST['videoUrl' . $sectionID] ?? '';
             $updateVideoContentQuery = "UPDATE videos SET video_url = ? WHERE sectionID = ?";
             $stmt = $conn->prepare($updateVideoContentQuery);
             if (!$stmt) {
@@ -124,6 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+
 
     // ส่งผู้ใช้ไปยังหน้าบทเรียน
     header("Location: lesson.php?lessonID=" . $lesson_id);

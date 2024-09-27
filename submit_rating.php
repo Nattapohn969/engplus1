@@ -1,39 +1,20 @@
 <?php
 session_start();
-include 'connect.php'; // Include your database connection file
+require 'connect.php'; // Your database connection
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Retrieve data from POST request
-    $lessonID = $_POST['lessonID'] ?? null;  // Using null coalescing operator to avoid undefined index
-    $userID = $_POST['user_ID'] ?? null;
-    $rating = $_POST['rating'] ?? null;
+$lessonID = $_POST['lessonID'];
+$userID = $_POST['user_ID'];
+$rating = $_POST['rating'];
 
-    // Validate the data
-    if ($lessonID !== null && $userID !== null && $rating !== null) {
-        try {
-            // Check if the user has already rated this lesson
-            $stmt = $pdo->prepare("SELECT * FROM ratings WHERE lessonID = ? AND user_ID = ?");
-            $stmt->execute([$lessonID, $userID]);
-            $existingRating = $stmt->fetch();
+$stmt = $conn->prepare("INSERT INTO ratings (lessonID, user_ID, rating) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE rating = VALUES(rating)");
+$stmt->bind_param("iii", $lessonID, $userID, $rating);
 
-            if ($existingRating) {
-                // Update the existing rating
-                $stmt = $pdo->prepare("UPDATE ratings SET rating = ?, timestamp = NOW() WHERE lessonID = ? AND user_ID = ?");
-                $stmt->execute([$rating, $lessonID, $userID]);
-            } else {
-                // Insert a new rating
-                $stmt = $pdo->prepare("INSERT INTO ratings (lessonID, user_ID, rating, timestamp) VALUES (?, ?, ?, NOW())");
-                $stmt->execute([$lessonID, $userID, $rating]);
-            }
-
-            echo json_encode(['status' => 'success']);
-        } catch (PDOException $e) {
-            echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
-        }
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Invalid data.']);
-    }
+if ($stmt->execute()) {
+    echo "Rating saved successfully.";
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
+    echo "Error saving rating.";
 }
+
+$stmt->close();
+$conn->close();
 ?>

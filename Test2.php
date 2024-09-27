@@ -73,21 +73,60 @@ mysqli_close($conn);
             return Object.values(question).filter(word => word).map(word => word.trim());
         });
 
+
+
+
+
+
+
         // ฟังก์ชันแสดงคำในแต่ละคำถาม
         function displayWords(questionIndex) {
             // ดึงคำที่ไม่ใช่ค่า null ออกมาและทำการสับเรียงลำดับใหม่แบบสุ่ม
-            const words = Object.values(questions[questionIndex]).filter(word => word).map(word => word.trim()).slice(0, 10); 
-            const shuffledWords = words.sort(() => 0.5 - Math.random());
-            const wordsContainer = document.getElementById('words-container-' + questionIndex);
-            wordsContainer.innerHTML = ''; 
-            shuffledWords.forEach(word => {
-                const wordElement = document.createElement('div');
-                wordElement.classList.add('word');
-                wordElement.innerText = word;
-                wordElement.onclick = () => addToAnswer(wordElement, questionIndex);
-                wordsContainer.appendChild(wordElement);
+            const words = Object.values(questions[questionIndex]) // ดึงค่าในอ็อบเจ็กต์ questions ที่อยู่ในตำแหน่ง questionIndex
+                .filter(word => word) // กรองเฉพาะคำที่ไม่ใช่ null (หรือ undefined)
+                .map(word => word.trim()) // ลบช่องว่างที่อยู่ข้างหน้าและข้างหลังของแต่ละคำ
+                .slice(0, 10); // เลือกคำสูงสุด 10 คำ
+
+            let shuffledWords = shuffleWords(words); // เรียกฟังก์ชัน shuffleWords เพื่อสุ่มเรียงลำดับคำ
+
+            const wordsContainer = document.getElementById('words-container-' + questionIndex); // ดึงอิลิเมนต์ที่จะแสดงคำโดยใช้ ID
+            wordsContainer.innerHTML = ''; // ล้างเนื้อหาภายในคอนเทนเนอร์เพื่อเตรียมแสดงคำใหม่
+            shuffledWords.forEach(word => { // สำหรับแต่ละคำใน shuffledWords
+                const wordElement = document.createElement('div'); // สร้างอิลิเมนต์ div ใหม่สำหรับแสดงคำ
+                wordElement.classList.add('word'); // เพิ่มคลาส 'word' ให้กับอิลิเมนต์
+                wordElement.innerText = word; // ตั้งค่าเนื้อหาของอิลิเมนต์เป็นคำที่สุ่มมา
+                wordElement.onclick = () => addToAnswer(wordElement, questionIndex); // ตั้งค่าการคลิกเพื่อเรียกใช้ฟังก์ชัน addToAnswer
+                wordsContainer.appendChild(wordElement); // เพิ่มอิลิเมนต์คำเข้าไปในคอนเทนเนอร์
             });
         }
+
+        // ฟังก์ชันสับเรียงลำดับคำใหม่แบบสุ่ม โดยห้ามให้ตัวเลขเรียงกัน
+        function shuffleWords(words) {
+            let shuffled = []; // สร้างตัวแปรสำหรับเก็บคำที่ถูกสับเรียง
+            do {
+                shuffled = words.sort(() => 0.5 - Math.random()); // สุ่มเรียงลำดับคำ
+            } while (checkConsecutiveNumbers(shuffled)); // ตรวจสอบว่ามีคำที่เป็นตัวเลขเรียงกันอยู่หรือไม่
+            return shuffled; // คืนค่าคำที่ถูกสับเรียง
+        }
+
+        // ฟังก์ชันตรวจสอบว่ามีตัวเลขที่เรียงกันหรือไม่
+        function checkConsecutiveNumbers(words) {
+            for (let i = 0; i < words.length - 1; i++) { // วนลูปผ่านคำทั้งหมด
+                const currentWord = parseInt(words[i]); // แปลงคำปัจจุบันเป็นตัวเลข
+                const nextWord = parseInt(words[i + 1]); // แปลงคำถัดไปเป็นตัวเลข
+                if (!isNaN(currentWord) && !isNaN(nextWord)) { // ตรวจสอบว่าทั้งสองเป็นตัวเลขหรือไม่
+                    if (Math.abs(currentWord - nextWord) === 1) { // ตรวจสอบว่าตัวเลขปัจจุบันและถัดไปมีค่าห่างกัน 1 หรือไม่
+                        return true; // ถ้าพบตัวเลขที่เรียงกัน, return true
+                    }
+                }
+            }
+            return false; // ถ้าไม่มีตัวเลขเรียงกัน, return false
+        }
+
+
+
+
+
 
         // ฟังก์ชันเพิ่มคำไปยังช่องคำตอบ
         function addToAnswer(wordElement, questionIndex) {
