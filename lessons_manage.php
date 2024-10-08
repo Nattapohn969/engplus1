@@ -20,13 +20,24 @@ include 'connect.php';
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Dashboard - SB Admin</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
     <link href="css/stylead.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
-
+<style>
+    body{
+        background-image: url("assets/img/Untitled design3.png");
+        background-size: cover;
+        /* ขยายรูปให้เต็มพื้นที่แต่คงสัดส่วน */
+        background-attachment: fixed;
+        /* รูปพื้นหลังจะอยู่คงที่ */
+    }
+</style>
 
 <body class="sb-nav-fixed">
     <!-- ส่วนของ Navbar ที่นำเข้าจากไฟล์ navbar.php -->

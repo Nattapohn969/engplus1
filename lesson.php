@@ -80,6 +80,43 @@ $sections = $stmt->get_result();
             font-size: 2.5rem;
         }
 
+
+
+
+        h3 {
+            text-align: center;
+            margin: 20px;
+            font-size: 15px;
+            border: 2px solid black;
+        }
+
+        /* สร้างปุ่มย้อนกลับ */
+        .back-button {
+            position: absolute;
+            left: 10px;
+            /* ตำแหน่งซ้ายมือ */
+            top: 20px;
+            /* ระยะห่างจากขอบด้านบน */
+            background-color: #4CAF50;
+            /* สีพื้นหลัง */
+            color: white;
+            /* สีตัวอักษร */
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #45a049;
+            /* เปลี่ยนสีเมื่อวางเมาส์ */
+        }
+
+
+
         .lesson-description {
             text-align: center;
             color:
@@ -194,10 +231,11 @@ $sections = $stmt->get_result();
 
 <body>
     <div class="container">
+        <a href="javascript:history.back()" class="back-button">ย้อนกลับ</a>
+
         <h1><?php echo htmlspecialchars($lesson['lessonName'], ENT_QUOTES, 'UTF-8'); ?></h1>
 
         <!-- Display Lesson Description -->
-
 
         <!-- Display Cover Image -->
         <?php if (!empty($lesson['cover_image'])): ?>
@@ -242,6 +280,7 @@ $sections = $stmt->get_result();
                         </div>
                     <?php endwhile; ?>
 
+
                     <?php
                     // ดึงข้อมูลเนื้อหาประเภทวิดีโอ
                     $stmt = $conn->prepare("SELECT * FROM videos WHERE sectionID = ?");
@@ -254,6 +293,9 @@ $sections = $stmt->get_result();
                             <video controls src="<?php echo htmlspecialchars($video['video_url'], ENT_QUOTES, 'UTF-8'); ?>"></video>
                         </div>
                     <?php endwhile; ?>
+
+
+
                 </div>
             <?php endwhile; ?>
         <?php else: ?>
@@ -300,7 +342,7 @@ $sections = $stmt->get_result();
                 }
             });
 
-            // เมื่อผู้ใช้พยายามเลื่อนวิดีโอ
+            // เมื่อผู้ใช้พยายามเลื่อนวิดีโอf
             video.addEventListener("seeking", function () {
                 if (!isVideoEnded) {
                     isSeeking = true; // เริ่มสถานะเลื่อน

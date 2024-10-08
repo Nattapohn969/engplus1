@@ -129,7 +129,6 @@ span.heart-icon {
     display: grid;
     grid-template-rows: 0.3fr 0.3fr 1fr;
 }
-
 .course-card {
     border: 1px solid #ddd;
     padding: 16px;
@@ -139,8 +138,11 @@ span.heart-icon {
     height: 350px;
     text-align: center;
     position: relative;
-    /* จัดตำแหน่งไอคอน */
+    background-color: #f9f9f9f5;
+    border-radius: 20px;
 }
+user agent stylesheet
+div 
 
 .heart-icon.saved {
     color: red;

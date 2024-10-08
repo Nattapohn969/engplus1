@@ -35,9 +35,39 @@ $testType_ID = isset($lesson['testType_ID']) ? intval($lesson['testType_ID']) : 
     <title>Test Page</title>
     <link href="css/style1.css" rel="stylesheet" />
 </head>
+<style>
+     h3 {
+            text-align: center;
+            margin: 20px;
+            font-size: 15px;
+            border: 2px solid black;
+        }
+
+        /* สร้างปุ่มย้อนกลับ */
+        .back-button {
+            position: absolute;
+            left: 10px; /* ตำแหน่งซ้ายมือ */
+            top: 20px; /* ระยะห่างจากขอบด้านบน */
+            background-color: #4CAF50; /* สีพื้นหลัง */
+            color: white; /* สีตัวอักษร */
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #45a049; /* เปลี่ยนสีเมื่อวางเมาส์ */
+        }
+</style>
 
 <body>
     <div class="container">
+        <a href="javascript:history.back()" class="back-button">ย้อนกลับ</a>
+
         <h1>ทำแบบทดสอบ</h1>
 
         <?php
@@ -50,12 +80,12 @@ $testType_ID = isset($lesson['testType_ID']) ? intval($lesson['testType_ID']) : 
             echo '<p>Test type not found.</p>';
         }
         ?>
-        
+
     </div>
 </body>
 
 </html>
 
-<?php 
+<?php
 // No need to manually close the connection; PHP will handle it.
 ?>

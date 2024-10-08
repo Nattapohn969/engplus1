@@ -15,7 +15,10 @@ $lessonName = htmlspecialchars($lessonName);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="css/stylead.css" rel="stylesheet">
+    <link href="stylead.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
     <title>Choose Test</title>
     <style>
         /* Navbar styling */
@@ -46,7 +49,7 @@ $lessonName = htmlspecialchars($lessonName);
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+
             background-color: #fff;
             color: #333;
             margin: 0;
@@ -55,7 +58,10 @@ $lessonName = htmlspecialchars($lessonName);
             flex-direction: column;
             align-items: center;
             height: 100vh;
-            padding-top: 70px; /* Adjusted for navbar height */
+            padding-top: 70px;
+            font-family: "Mali", cursive;
+            font-weight: 500;
+            font-style: normal;
         }
 
         .container {
@@ -66,7 +72,8 @@ $lessonName = htmlspecialchars($lessonName);
             max-width: 600px;
             width: 100%;
             text-align: center;
-            margin-top: 20px; /* Space between navbar and container */
+            margin-top: 200px;
+            /* Space between navbar and container */
         }
 
         .container h1 {
@@ -88,6 +95,9 @@ $lessonName = htmlspecialchars($lessonName);
             cursor: pointer;
             border-radius: 5px;
             transition: background-color 0.3s ease;
+            font-family: "Mali", cursive;
+            font-weight: 500;
+            font-style: normal;
         }
 
         .container button:hover {

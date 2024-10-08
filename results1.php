@@ -6,7 +6,7 @@ $lessonID = isset($_GET['lessonID']) ? htmlspecialchars($_GET['lessonID']) : '';
 $testType_ID = 1; // กำหนดค่า testType_ID เป็น 1
 
 // ข้อความแสดงผลลัพธ์
-$resultMessage = "คุณทำได้ $score จากทั้งหมด $totalQuestions ข้อ";
+$resultMessage = "คะแนนรวมของคุณคือ: $score จากทั้งหมด $totalQuestions ข้อ";
 
 // บันทึกผลลัพธ์ลงฐานข้อมูล
 include 'connect.php';
@@ -22,7 +22,7 @@ $user_ID = isset($_SESSION['user_ID']) ? intval($_SESSION['user_ID']) : 0;
 $stmt->bind_param("iiii", $lessonID, $testType_ID, $user_ID, $score);
 
 if ($stmt->execute()) {
-    $resultMessage .= " และบันทึกผลลัพธ์สำเร็จ!";
+    $resultMessage .= "";
 } else {
     $resultMessage .= " แต่เกิดข้อผิดพลาดในการบันทึกผลลัพธ์.";
 }
@@ -43,7 +43,7 @@ $conn->close();
 </head>
 
 <body>
-    <?php include 'rating.php'; ?>
+    <?php include 'result.php'; ?>
 </body>
 
 </html>

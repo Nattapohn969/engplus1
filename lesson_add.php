@@ -4,19 +4,37 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.ckeditor.com/ckeditor5/35.0.1/classic/ckeditor.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet"> -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.2.0/classic/ckeditor.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="css/addlesson.css" rel="stylesheet" />
-    <link href="css/stylead.css" rel="stylesheet" />
+    <link href="addlesson.css" rel="stylesheet" />
+    <!-- <link href="stylead.css" rel="stylesheet" /> -->
     <title>Add Lesson</title>
 </head>
 <style>
     .lesson-description-container {
         margin: 20px 0;
+    }
+
+    .lesson-name-container {
+        margin-bottom: 20px;
+        display: flex;
+    }
+
+    .lesson-name-container input[type="text"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        margin-right: 50px;
     }
 
     .lesson-description-container label {
@@ -32,6 +50,11 @@
         font-size: 1rem;
         border-radius: 5px;
         border: 1px solid #ccc;
+    }
+
+
+    .lesson-description-container {
+        margin-bottom: 20px;
     }
 </style>
 
@@ -67,8 +90,9 @@
                 <div class="cover-image-controls">
                     <label for="coverImage">Cover Image:</label>
                     <input type="file" id="coverImage" name="coverImage" accept="image/*" />
-                    <div id="coverImagePreview" class="cover-image-preview"></div> <!-- Preview container -->
+                    <div id="coverImagePreview" class="cover-image-preview"></div>
                 </div>
+
                 <div class="lesson-description-container">
                     <label for="lessonDescription">Lesson Description:</label>
                     <textarea id="lessonDescription" name="lessonDescription"
@@ -102,25 +126,45 @@
     </div>
 
     <script>
-        let sectionCount = 1;
-        //ck editor ของ รายละเอียดของบทเรียน
-        document.addEventListener("DOMContentLoaded", function () {
-            ClassicEditor
-                .create(document.querySelector('#lessonDescription'), {
-                    toolbar: [
-                        'heading', '|',
-                        'bold', 'italic', 'link', '|',
-                        'fontColor', 'fontBackgroundColor', '|',
-                        'bulletedList', 'numberedList', '|',
-                        'imageUpload', 'blockQuote', 'insertTable', '|',
-                        'undo', 'redo'
-                    ],
-                    language: 'en',
+        ClassicEditor
+            .create(document.querySelector('#lessonDescription'),
+                {
+                    ckfinder:
+                    {
+                        uploadUrl: "{{route('ckeditor.upload',['_token'=>csrf_token()])}}",
+                    }
                 })
-                .catch(error => {
-                    console.error('CKEditor initialization error for lesson description:', error);
-                });
-        });
+            .catch(error => {
+                console.error(error);
+
+            });
+
+
+
+        //ck editor ของ รายละเอียดของบทเรียน
+        // document.addEventListener("DOMContentLoaded", function () {
+        //     ClassicEditor
+        //         .create(document.querySelector('#lessonDescription'), {
+        //             toolbar: [
+        //                 'heading', '|',
+        //                 'bold', 'italic', 'link', '|',
+        //                 'fontColor', 'fontBackgroundColor', '|',
+        //                 'bulletedList', 'numberedList', '|',
+        //                 'imageUpload', 'blockQuote', 'insertTable', '|',
+        //                 'undo', 'redo'
+        //             ],
+        //             language: 'en',
+        //             ckfinder: {
+        //                 uploadUrl: 'uploads/' // Update this to the correct path of your file upload handler
+        //             }
+        //         })
+        //         .catch(error => {
+        //             console.error('CKEditor initialization error for lesson description:', error);
+        //         });
+        // });
+
+
+        let sectionCount = 1;
 
         function initializeEditor(sectionNumber) {
             ClassicEditor

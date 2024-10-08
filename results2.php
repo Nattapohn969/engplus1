@@ -34,7 +34,7 @@ $resultMessage = '';
 
 if (mysqli_stmt_execute($stmt)) {
     // บันทึกสำเร็จ
-    $resultMessage = "บันทึกคะแนนเรียบร้อยแล้ว! คะแนนรวมของคุณคือ: $total_score";
+    $resultMessage = "คะแนนรวมของคุณคือ: $total_score";
 } else {
     // บันทึกไม่สำเร็จ
     $resultMessage = "เกิดข้อผิดพลาดในการบันทึกคะแนน: " . mysqli_error($conn);
@@ -44,6 +44,12 @@ if (mysqli_stmt_execute($stmt)) {
 mysqli_stmt_close($stmt);
 mysqli_close($conn);
 ?>
+
+
+
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -56,7 +62,7 @@ mysqli_close($conn);
 </head>
 
 <body>
-  <?php include 'rating.php';?>
+  <?php include 'result.php';?>
 </body>
 
 </html>

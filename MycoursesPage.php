@@ -48,7 +48,8 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
         rel="stylesheet">
     <link href="MycoursesPage.css" rel="stylesheet" />
     <title>ENG PLUS</title>
@@ -56,6 +57,136 @@ $conn->close();
 <style>
     h1 {
         padding-left: 20px;
+    }
+
+    body {
+        background-image: url("assets/img/mycou.png");
+        background-size: cover;
+        /* ขยายรูปให้เต็มพื้นที่แต่คงสัดส่วน */
+        background-attachment: fixed;
+
+        font-family: "Mali",
+            serif;
+
+        font-style: normal;
+    }
+
+    .course-card {
+        border: 1px solid #ddd;
+        padding: 16px;
+        margin: 10px;
+        display: inline-block;
+        width: 350px;
+        height: 350px;
+        text-align: center;
+        position: relative;
+        background-color: #f9f9f9f5;
+        border-radius: 20px;
+    }
+
+
+    .remove-button {
+        color: #fff;
+        cursor: pointer;
+        margin-top: 10px;
+        display: block;
+        text-align: center;
+        border: 2px solid red;
+        background-color: red;
+        width: 150px;
+        height: 30px;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+        text-decoration: none;
+        margin-left: 90px;
+
+
+    }
+
+    /* Hover state */
+    .remove-button:hover {
+        background-color: darkred;
+        border-color: #fff;
+        text-decoration: none;
+
+    }
+
+
+
+    .navbar {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: "Mali", serif;
+        font-weight: 700;
+        font-style: normal;
+    }
+
+
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #333;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 5px;
+    }
+
+
+    .dropdown-content a {
+        color: #fff;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        border-bottom: 1px solid #ddd;
+        font-family: "Mali", serif;
+        font-weight: 500;
+        font-style: normal;
+    }
+
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropbtn {
+        background-color: #3f9965;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        font-size: 17px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        font-family: "Mali", serif;
+        font-weight: 700;
+        font-style: normal;
+    }
+
+    .dropbtn:hover {
+        background-color: #ddd;
+        color: #333;
+    }
+
+    .dropbtn1:hover {
+        background-color: #ddd;
+        color: #333;
+    }
+
+
+
+    .dropdown-content a:hover {
+        background-color: #ddd;
+        color: #333;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
     }
 </style>
 
@@ -67,7 +198,7 @@ $conn->close();
             <ul><a href='CoursesPage.php' class='blacktext' style="margin-right: 5px">Courses</a></ul>
             <ul><a href='MycoursesPage.php' class='blacktext' style="margin-right: 5px">My Courses</a></ul>
             <ul><a href='#' class='blacktext' style="margin-right: 5px">Transform</a></ul>
-            <ul><a href='ProfilePage.php' class='blacktext' style="margin-right: 30px">Profile</a></ul>
+            <!-- <ul><a href='edit1.php' class='blacktext' style="margin-right: 30px">Profile</a></ul> -->
             <div id="accountMenu" class="dropdown">
                 <button class="dropbtn" id="accountButton">
                     <?php
@@ -79,9 +210,12 @@ $conn->close();
                     ?>
                 </button>
                 <div id="dropdownContent" class="dropdown-content">
+                    <a href="edit1.php">Profile</a>
+                    <a href="report.php">Report</a>
                     <a href="logout.php">Logout</a>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -100,7 +234,8 @@ $conn->close();
                             alt="<?php echo htmlspecialchars($course['lessonName']); ?> Image" width="200" height="150">
                         <div class="course-details">
                             <h4><?php echo htmlspecialchars($course['lessonName']); ?></h4>
-                            <span class="remove-button" onclick="removeCourse(<?php echo $course['lessonID']; ?>)">Remove</span>
+                            <button type="button" class="remove-button"
+                                onclick="removeCourse(<?php echo $course['lessonID']; ?>)">Remove</button>
                         </div>
                     </div>
                 <?php endforeach; ?>

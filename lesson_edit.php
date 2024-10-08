@@ -24,9 +24,53 @@ if (isset($_GET['lessonID'])) {  // ตรวจสอบว่ามีกา�
     echo "No lesson ID provided.";  // หากไม่มี lessonID ถูกส่งมา แสดงข้อความและหยุดการทำงาน
     exit;
 }
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $lesson_id = $_POST['lesson_id'];
+    $lessonName = $_POST['lessonName'];
+    $pageColor = $_POST['page_color'];
+    $containerColor = $_POST['container_color'];
+    $textColor = $_POST['text_color'];
+    $lessonDescription = $_POST['lessonDescription'];
+    $coverImage = $_FILES['coverImage']['name'] ?? '';
+
+    // อัปเดตข้อมูลบทเรียน
+    $updateLessonQuery = "UPDATE lessons SET lessonName = ?, page_color = ?, container_color = ?, text_color = ?, lessonDescription = ? WHERE lessonID = ?";
+    $stmt = $conn->prepare($updateLessonQuery);
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
+    }
+    $stmt->bind_param('sssssi', $lessonName, $pageColor, $containerColor, $textColor, $lessonDescription, $lesson_id);
+    if (!$stmt->execute()) {
+        die("Execute failed: " . $stmt->error);
+    }
+    echo "Lesson updated successfully.<br>";
+
+    // อัปโหลด cover image
+    if ($coverImage) {
+        $targetDir = "uploads/images/";
+        $targetFile = $targetDir . basename($coverImage);
+
+        if (move_uploaded_file($_FILES['coverImage']['tmp_name'], $targetFile)) {
+            // อัปเดต URL ของ cover image
+            $updateCoverImageQuery = "UPDATE lessons SET cover_image = ? WHERE lessonID = ?";
+            $stmt = $conn->prepare($updateCoverImageQuery);
+            if (!$stmt) {
+                die("Prepare failed: " . $conn->error);
+            }
+            $stmt->bind_param('si', $targetFile, $lesson_id);
+            if (!$stmt->execute()) {
+                die("Execute failed: " . $stmt->error);
+            }
+            echo "Cover image uploaded successfully: $targetFile<br>";
+        } else {
+            echo "Error uploading cover image.<br>";
+        }
+    }
+}
+
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,18 +78,76 @@ if (isset($_GET['lessonID'])) {  // ตรวจสอบว่ามีกา�
     <!-- ส่วนหัว -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com"> <!-- โหลดฟอนต์จาก Google Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mali:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">
     <script src="https://cdn.ckeditor.com/ckeditor5/35.0.1/classic/ckeditor.js"></script>
     <!-- โหลด CKEditor สำหรับแก้ไขข้อความ -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <!-- โหลด CSS สำหรับ SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- โหลด JS สำหรับ SweetAlert2 -->
-    <link href="css/addlesson.css" rel="stylesheet" /> <!-- ลิงก์ไปยังไฟล์ CSS สำหรับการจัดรูปแบบของฟอร์ม -->
-    <link href="css/stylead.css" rel="stylesheet" /> <!-- ลิงก์ไปยังไฟล์ CSS เพิ่มเติม -->
+    <link href="addlesson.css" rel="stylesheet" /> <!-- ลิงก์ไปยังไฟล์ CSS สำหรับการจัดรูปแบบของฟอร์ม -->
+    <link href="stylead.css" rel="stylesheet" /> <!-- ลิงก์ไปยังไฟล์ CSS เพิ่มเติม -->
     <title>Edit Lesson</title> <!-- ชื่อของหน้าเว็บ -->
 </head>
+<style>
+    .lesson-description-container {
+        margin-bottom: 20px;
+    }
+
+    .lesson-name-container {
+        margin-bottom: 20px;
+        display: flex;
+    }
+
+    .lesson-name-container input[type="text"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        margin-right: 50px;
+    }
+
+    .save-lesson {
+        background-color: #20B2AA;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        margin-right: 10px;
+        margin-bottom: 20px;
+    }
+    .add-section{
+        background-color: #3CB371;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        margin-right: 10px;
+        margin-bottom: 5px;
+    }
+
+    /* .save-section{
+          background-color: #3CB371;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        margin-right: 10px;
+        margin-bottom: 5px;
+    }
+ */
+
+
+</style>
 
 <body>
     <?php include 'navbar.php'; ?> <!-- เรียกใช้ Navbar จากไฟล์ navbar.php -->
@@ -57,7 +159,7 @@ if (isset($_GET['lessonID'])) {  // ตรวจสอบว่ามีกา�
         </div>
 
         <!-- ฟอร์มแก้ไขบทเรียน -->
-        <form action='lesson_update.php' method="post" enctype="multipart/form-data">
+        <form action='' method="post" enctype="multipart/form-data">
             <input type="hidden" name="lesson_id"
                 value="<?php echo htmlspecialchars($lesson['lessonID'], ENT_QUOTES, 'UTF-8'); ?>" />
             <!-- เก็บค่า lessonID ไว้ในฟอร์มอย่างปลอดภัย -->
@@ -85,6 +187,7 @@ if (isset($_GET['lessonID'])) {  // ตรวจสอบว่ามีกา�
                     <label for="lessonName">Lesson Name:</label> <!-- ป้ายกำกับสำหรับชื่อบทเรียน -->
                     <input type="text" id="lessonName" name="lessonName"
                         value="<?php echo htmlspecialchars($lesson['lessonName'], ENT_QUOTES, 'UTF-8'); ?>" required />
+
                     <!-- อินพุตสำหรับแก้ไขชื่อบทเรียน -->
 
                     <label for="text_color">Text Color:</label> <!-- ป้ายกำกับสำหรับสีของข้อความ -->
@@ -114,302 +217,117 @@ if (isset($_GET['lessonID'])) {  // ตรวจสอบว่ามีกา�
                     <!-- textarea สำหรับแก้ไขรายละเอียดของบทเรียน -->
                 </div>
 
-                <script>
-                    ClassicEditor
-                        .create(document.querySelector('#lessonDescription'))  // สร้าง CKEditor สำหรับ textarea
-                        .catch(error => {
-                            console.error(error);  // แสดง error ถ้าหากเกิดข้อผิดพลาดในการสร้าง CKEditor
-                        });
-                </script>
 
-
-                <!-- Manage lesson sections -->
-                <div id="sections-container">
-                    <?php
-                    // Fetch sections of the lesson from the database with content of each type
-                    $query = "
-        SELECT sections.*, text_content.content as text_content, text_content.text_color as text_color, 
-               images.image_url, videos.video_url 
-        FROM sections
-        LEFT JOIN text_content ON sections.sectionID = text_content.sectionID
-        LEFT JOIN images ON sections.sectionID = images.sectionID
-        LEFT JOIN videos ON sections.sectionID = videos.sectionID
-        WHERE sections.lessonID = ?
-    ";
-                    $stmt = $conn->prepare($query);
-                    $stmt->bind_param('i', $lesson_id);
-                    $stmt->execute();
-                    $sections_result = $stmt->get_result();
-                    $sectionCount = 0;
-
-                    // Display each section of the lesson
-                    while ($section = $sections_result->fetch_assoc()) {
-                        $sectionCount++;
-                        $sectionID = $section['sectionID']; // Fetch sectionID
-                        ?>
-                        <div class="content-section" id="section<?php echo $sectionID; ?>">
-                            <div class="section-header">
-                                <span class="section-title">Section <?php echo $sectionCount; ?> (ID:
-                                    <?php echo $sectionID; ?>)</span> <!-- Display sectionID -->
-                                <button type="button" class="delete-button"
-                                    onclick="removeSection(<?php echo $sectionID; ?>)">Delete</button>
-                            </div>
-                            <!-- Section background color selection -->
-                            <label for="sectionColor<?php echo $sectionID; ?>">Section Background Color:</label>
-                            <input type="color" id="sectionColor<?php echo $sectionID; ?>"
-                                name="sectionColor<?php echo $sectionID; ?>"
-                                value="<?php echo htmlspecialchars($section['section_color'], ENT_QUOTES, 'UTF-8'); ?>"
-                                onchange="updateSectionColor(<?php echo $sectionID; ?>)" />
-
-                            <!-- Section content type selection -->
-                            <label for="sectionContent<?php echo $sectionID; ?>">Content Type:</label>
-                            <select id="sectionContent<?php echo $sectionID; ?>"
-                                name="contentType[<?php echo $sectionID; ?>]"
-                                onchange="updateContent(<?php echo $sectionID; ?>)">
-                                <option value="">-- Select Content --</option>
-                                <option value="text" <?php echo $section['contentType'] == 'text' ? 'selected' : ''; ?>>
-                                    Text</option>
-                                <option value="image" <?php echo $section['contentType'] == 'image' ? 'selected' : ''; ?>>
-                                    Image</option>
-                                <option value="video" <?php echo $section['contentType'] == 'video' ? 'selected' : ''; ?>>
-                                    Video</option>
-                            </select>
-
-                            <div id="content<?php echo $sectionID; ?>" class="section-content">
-
-                                <?php if ($section['contentType'] == 'text'): ?>
-                                    <textarea id="editor<?php echo $sectionID; ?>"
-                                        name="content<?php echo $sectionID; ?>"><?php echo htmlspecialchars($section['text_content'], ENT_QUOTES, 'UTF-8'); ?></textarea>
-                                    <script>
-                                        ClassicEditor
-                                            .create(document.querySelector('#editor<?php echo $sectionID; ?>'))
-                                            .then(editor => {
-                                                editor.model.document.on('change:data', () => {
-                                                    document.querySelector('#editor<?php echo $sectionID; ?>').value = editor.getData();
-                                                });
-                                            })
-                                            .catch(error => {
-                                                console.error(error);
-                                            });
-                                    </script>
-
-                                <?php elseif ($section['contentType'] == 'image'): ?>
-                                    <input type="file" name="contentImage<?php echo $sectionID; ?>" accept="image/*" />
-                                    <div id="preview<?php echo $sectionID; ?>" class="preview">
-                                        <?php if (!empty($section['image_url'])): ?>
-                                            <img src="<?php echo htmlspecialchars($section['image_url'], ENT_QUOTES, 'UTF-8'); ?>"
-                                                alt="Image Preview" style="max-width: 100%; height: auto;">
-                                        <?php endif; ?>
-                                    </div>
-
-                                <?php elseif ($section['contentType'] == 'video'): ?>
-                                    <input type="file" name="contentVideo<?php echo $sectionID; ?>" accept="video/*" />
-                                    <div id="preview<?php echo $sectionID; ?>" class="preview">
-                                        <?php if (!empty($section['video_url'])): ?>
-                                            <video controls style="max-width: 100%; height: auto;">
-                                                <source
-                                                    src="<?php echo htmlspecialchars($section['video_url'], ENT_QUOTES, 'UTF-8'); ?>"
-                                                    type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        <?php endif; ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    <?php } ?>
-                </div>
-
-                <!-- Add new section -->
-                <button type="button" id="addSectionBtn">Add Section</button>
-            </div>
-
-            <button type="submit">Save Changes</button>
+                <button type="submit" class="save-lesson">Save Lesson </button>
         </form>
+        <!-- Manage lesson sections -->
+        <div id="sections-container">
+            <?php
+            // Fetch sections of the lesson from the database with content of each type
+            $query = "
+                        SELECT sections.*, text_content.content as text_content, 
+                               images.image_url, videos.video_url 
+                        FROM sections
+                        LEFT JOIN text_content ON sections.sectionID = text_content.sectionID
+                        LEFT JOIN images ON sections.sectionID = images.sectionID
+                        LEFT JOIN videos ON sections.sectionID = videos.sectionID
+                        WHERE sections.lessonID = ?
+                    ";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param('i', $lesson_id);
+            $stmt->execute();
+            $sections_result = $stmt->get_result();
+            $sectionCount = 0;
+
+            // Display each section of the lesson
+            while ($section = $sections_result->fetch_assoc()) {
+                $sectionCount++;
+                $sectionID = $section['sectionID']; // Fetch sectionID
+                ?>
+                <div class="content-section" id="section<?php echo $sectionID; ?>">
+                    <form action="section_update.php" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="section_id"
+                            value="<?php echo htmlspecialchars($sectionID, ENT_QUOTES, 'UTF-8'); ?>" />
+                        <div class="section-header">
+                            <span class="section-title">Section <?php echo $sectionCount; ?> (ID:
+                                <?php echo $sectionID; ?>)</span> <!-- Display sectionID -->
+                            <button type="button" class="delete-button"
+                                onclick="removeSection(<?php echo $sectionID; ?>)">Delete</button>
+                        </div>
+                        <!-- Section background color selection -->
+                        <label for="sectionColor<?php echo $sectionID; ?>">Section Background Color:</label>
+                        <input type="color" id="sectionColor<?php echo $sectionID; ?>" name="section_color"
+                            value="<?php echo htmlspecialchars($section['section_color'], ENT_QUOTES, 'UTF-8'); ?>"
+                            onchange="updateSectionColor(<?php echo $sectionID; ?>)" />
+
+                        <!-- Section content type selection -->
+                        <label for="sectionContent<?php echo $sectionID; ?>">Content Type:</label>
+                        <select id="sectionContent<?php echo $sectionID; ?>" name="content_type"
+                            onchange="updateContent(<?php echo $sectionID; ?>)">
+                            <option value="">-- Select Content --</option>
+                            <option value="text" <?php echo $section['contentType'] == 'text' ? 'selected' : ''; ?>>
+                                Text</option>
+                            <option value="image" <?php echo $section['contentType'] == 'image' ? 'selected' : ''; ?>>
+                                Image</option>
+                            <option value="video" <?php echo $section['contentType'] == 'video' ? 'selected' : ''; ?>>
+                                Video</option>
+                        </select>
+
+                        <div id="content<?php echo $sectionID; ?>" class="section-content">
+                            <?php if ($section['contentType'] == 'text'): ?>
+                                <textarea id="editor<?php echo $sectionID; ?>"
+                                    name="text_content"><?php echo htmlspecialchars($section['text_content'], ENT_QUOTES, 'UTF-8'); ?></textarea>
+                                <script>
+                                    ClassicEditor
+                                        .create(document.querySelector('#editor<?php echo $sectionID; ?>'))
+                                        .then(editor => {
+                                            editor.model.document.on('change:data', () => {
+                                                document.querySelector('#editor<?php echo $sectionID; ?>').value = editor.getData();
+                                            });
+                                        })
+                                        .catch(error => {
+                                            console.error(error);
+                                        });
+                                </script>
+                            <?php elseif ($section['contentType'] == 'image'): ?>
+                                <input type="file" name="image_content" accept="image/*"
+                                    onchange="previewImage(event, <?php echo $sectionID; ?>)" />
+                                <div id="preview<?php echo $sectionID; ?>" class="preview">
+                                    <?php if (!empty($section['image_url'])): ?>
+                                        <img src="<?php echo htmlspecialchars($section['image_url'], ENT_QUOTES, 'UTF-8'); ?>"
+                                            alt="Image Preview" style="max-width: 100%; height: auto;">
+                                    <?php endif; ?>
+                                </div>
+                            <?php elseif ($section['contentType'] == 'video'): ?>
+                                <input type="file" name="video_content" accept="video/*"
+                                    onchange="previewVideo(event, <?php echo $sectionID; ?>)" />
+                                <div id="preview<?php echo $sectionID; ?>" class="preview">
+                                    <?php if (!empty($section['video_url'])): ?>
+                                        <video controls style="max-width: 100%; height: auto;">
+                                            <source
+                                                src="<?php echo htmlspecialchars($section['video_url'], ENT_QUOTES, 'UTF-8'); ?>"
+                                                type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <button type="submit" class="save-section">Save Section</button>
+                    </form>
+                </div>
+            <?php } ?>
+        </div>
+
+        <!-- Add new section -->
+        <button type="button" id="addSectionBtn" class="add-section">Add Section +</button>
     </div>
 
-    <script>
 
+    </div>
 
-        // ตั้งค่าสีพื้นหลังของหน้าและคอนเทนเนอร์เมื่อโหลดหน้า
-        window.onload = function () {
-            updatePageColor(); // ตั้งค่าสีพื้นหลังของหน้า
-            updateContainerColor(); // ตั้งค่าสีพื้นหลังของคอนเทนเนอร์
-
-            // วนลูปผ่านทุก section และตั้งค่าสีพื้นหลังของแต่ละ section
-            const sectionCount = document.querySelectorAll('.content-section').length;
-            for (let i = 1; i <= sectionCount; i++) {
-                updateSectionColor(i); // ตั้งค่าสีพื้นหลังของแต่ละ section
-            }
-        };
-
-        // ฟังก์ชันในการตั้งค่าสีพื้นหลังของหน้า
-        function updatePageColor() {
-            document.body.style.backgroundColor = document.getElementById('page_color').value;
-        }
-
-        // ฟังก์ชันในการตั้งค่าสีพื้นหลังของคอนเทนเนอร์
-        function updateContainerColor() {
-            document.getElementById('lessonContainer').style.backgroundColor = document.getElementById('container_color').value;
-        }
-
-        // ฟังก์ชันในการตั้งค่าสีพื้นหลังของแต่ละ section
-        function updateSectionColor(sectionNumber) {
-            const section = document.getElementById('section' + sectionNumber);
-            const sectionColor = document.getElementById('sectionColor' + sectionNumber).value;
-            section.style.backgroundColor = sectionColor;
-        }
-
-
-
-
-        // เเสดงสีของส่วนต่างๆหลังจากที่กดเปลี่ยนเเล้ว
-
-        function updatePageColor() {
-            // เปลี่ยนเฉพาะสีพื้นหลังของหน้า
-            document.body.style.backgroundColor = document.getElementById('page_color').value;
-        }
-
-        function updateContainerColor() {
-            // เปลี่ยนเฉพาะสีพื้นหลังของ container ที่มี ID lessonContainer
-            document.getElementById('lessonContainer').style.backgroundColor = document.getElementById('container_color').value;
-        }
-
-        function changeLessonTextColor() {
-            // เปลี่ยนเฉพาะสีตัวอักษรของ lessonName และ lessonDescription
-            const textColor = document.getElementById('text_color').value;
-            document.getElementById('lessonName').style.color = textColor;
-            document.getElementById('lessonDescription').style.color = textColor;
-        }
-
-        function updateSectionColor(sectionNumber) {
-            // เปลี่ยนเฉพาะสีพื้นหลังของ section ที่ถูกระบุ
-            const section = document.getElementById('section' + sectionNumber);
-            const sectionColor = document.getElementById('sectionColor' + sectionNumber).value;
-            section.style.backgroundColor = sectionColor;
-        }
-
-
-
-
-        function updateContent(sectionNumber) {
-            const contentType = document.getElementById('sectionContent' + sectionNumber).value;
-            document.getElementById('content' + sectionNumber).innerHTML = '';
-
-            if (contentType === 'text') {
-                const editorContainer = document.createElement('textarea');
-                editorContainer.id = 'editor' + sectionNumber;
-                document.getElementById('content' + sectionNumber).appendChild(editorContainer);
-
-                ClassicEditor
-                    .create(editorContainer)
-                    .catch(error => {
-                        console.error(error);
-                    });
-
-            } else if (contentType === 'image') {
-                const imageInput = document.createElement('input');
-                imageInput.type = 'file';
-                imageInput.name = 'contentImage' + sectionNumber;
-                imageInput.accept = 'image/*';
-                imageInput.onchange = function (event) {
-                    previewImage(event, sectionNumber);
-                };
-                document.getElementById('content' + sectionNumber).appendChild(imageInput);
-
-                const preview = document.createElement('div');
-                preview.id = 'preview' + sectionNumber;
-                preview.className = 'preview';
-                document.getElementById('content' + sectionNumber).appendChild(preview);
-
-            } else if (contentType === 'video') {
-                const videoInput = document.createElement('input');
-                videoInput.type = 'file';
-                videoInput.name = 'contentVideo' + sectionNumber;
-                videoInput.accept = 'video/*';
-                videoInput.onchange = function (event) {
-                    previewVideo(event, sectionNumber);  // Call the preview function for video
-                };
-                document.getElementById('content' + sectionNumber).appendChild(videoInput);
-
-                const preview = document.createElement('div');
-                preview.id = 'preview' + sectionNumber;
-                preview.className = 'preview';
-                document.getElementById('content' + sectionNumber).appendChild(preview);
-            }
-        }
-
-        function previewImage(event, sectionNumber) {
-            const reader = new FileReader();
-            reader.onload = function () {
-                const preview = document.getElementById('preview' + sectionNumber);
-                preview.innerHTML = '<img src="' + reader.result + '" alt="Image Preview" style="max-width: 100%; height: auto;">';
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-
-        function previewCoverImage(event) {
-            const reader = new FileReader();
-            reader.onload = function () {
-                const preview = document.getElementById('coverImagePreview');
-                preview.innerHTML = '<img src="' + reader.result + '" alt="Cover Image Preview" style="max-width: 100%; height: auto;">';
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-
-        function previewVideo(event, sectionNumber) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function () {
-                    const preview = document.getElementById('preview' + sectionNumber);
-                    preview.innerHTML = `
-                <video controls style="max-width: 100%; height: auto;">
-                    <source src="${reader.result}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>`;
-                };
-                reader.readAsDataURL(file);  // Read the video file as a data URL for preview
-            }
-        }
-
-
-
-
-        function removeSection(sectionNumber) {
-            const section = document.getElementById('section' + sectionNumber);
-            if (section) {
-                section.remove();
-            }
-        }
-
-        document.getElementById('addSectionBtn').addEventListener('click', () => {
-            const sectionNumber = document.querySelectorAll('.content-section').length + 1;
-            const newSection = document.createElement('div');
-            newSection.className = 'content-section';
-            newSection.id = 'section' + sectionNumber;
-            newSection.innerHTML = `
-        <div class="section-header">
-            <span class="section-title">Section ${sectionNumber}</span>
-            <button type="button" class="delete-button" onclick="removeSection(${sectionNumber})">Delete</button>
-        </div>
-        <label for="sectionColor${sectionNumber}">Section Background Color:</label>
-        <input type="color" id="sectionColor${sectionNumber}" name="sectionColor${sectionNumber}" 
-            onchange="updateSectionColor(${sectionNumber})" />
-        <label for="sectionContent${sectionNumber}">Content Type:</label>
-        <select id="sectionContent${sectionNumber}" name="contentType[${sectionNumber}]"
-            onchange="updateContent(${sectionNumber})">
-            <option value="">-- Select Content --</option>
-            <option value="text">Text</option>
-            <option value="image">Image</option>
-            <option value="video">Video</option>
-        </select>
-        <div id="content${sectionNumber}" class="section-content"></div>
-    `;
-            document.getElementById('sections-container').appendChild(newSection);
-        });
-
-    </script>
+    <script src="js/editlesson.js"></script>
 </body>
 
 </html>
